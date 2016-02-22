@@ -1,0 +1,65 @@
+<template name="objectives">
+	{{> header currentPage="Objectives"}}
+
+	<div class="bottom-buffer">
+		<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addObjective">
+			<i class="fa fa-plus-circle"></i> Add Objective
+		</button>
+
+		<a class="btn btn-default pull-right" href="{{pathFor 'alternatives'}}">
+			Add Alternatives <i class="fa fa-angle-double-right"></i>
+		</a>
+	</div>
+
+	{{>objectivesTable}}
+
+	{{>addObjective}}
+</template>
+
+<template name="objectivesTable">
+	<table class="table table-bordered table-striped table-hover top-buffer">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Description</th>
+		</tr>
+		</thead>
+		<tbody>
+		{{#each objectiveList}}
+			<tr class="objectiveRow">
+				<td>{{name}}</td>
+				<td>{{description}}</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+</template>
+
+<template name="addObjective">
+	<div id="addObjective" class="modal fade" tabindex="-1">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span>
+						<span class="sr-only">Close</span>
+					</button>
+					<h3>Add Objective</h3>
+				</div>
+				<div class="modal-body">
+					{{>insertObjectiveForm}}
+				</div>
+			</div>
+		</div>
+	</div>
+</template>
+
+<template name="insertObjectiveForm">
+	{{#autoForm collection='Objectives' id='insertObjectiveForm' type='insert' doc=defaultValues}}
+		{{> afQuickField name='name'}}
+		{{> afQuickField name='description'}}
+		{{> afQuickField name='scenario_id'}}
+		{{> afQuickField name='turn'}}
+		<button type='submit' class='btn btn-success bottom-buffer'>Save</button>
+	{{/autoForm}}
+</template>

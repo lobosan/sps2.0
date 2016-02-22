@@ -1,0 +1,37 @@
+<template name="results">
+	{{> header currentPage = "Results"}}
+
+	<div class="bottom-buffer">
+		<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
+			<i class="fa fa-angle-double-left"></i> Probability Matrix
+		</a>
+
+		<form class="form-inline">
+			<button id="complete_values" type="button" class="btn btn-success switcher-separator">
+				<i class="fa fa-check"></i> Confirm Evaluation
+			</button>
+			<div class="form-group">
+				Turn: <select name="turn" id="turn" class="form-control switcher-separator">
+					<option value="" selected>Select one</option>
+					{{#each turns}}
+						<option value="{{turn}}">{{turn}}</option>
+					{{/each}}
+				</select>
+				Objectives <span class="switcher-separator">{{> switcheryObj}}</span>
+				Alternatives {{> switcheryAlt}}
+			</div>
+		</form>
+	</div>
+
+	{{> objectivesAccordion}}
+	{{> alternativesAccordion}}
+
+	<div id="influence-dependence-user" class="top-buffer"></div>
+	<div id="probability-user" class="top-buffer-medium"></div>
+
+	<div id="influence-dependence-global" class="top-buffer-medium"></div>
+    {{> objCoordGlobal}}
+
+	<div id="probability-global" class="top-buffer-medium"></div>
+    {{> probCoordGlobal}}
+</template>

@@ -1,0 +1,30 @@
+<template name="probability">
+	{{> header currentPage = "Probability Matrix"}}
+
+	<div class="bottom-buffer">
+		Objectives <span class="switcher-separator">{{> switcheryObj}}</span>
+		Alternatives {{> switcheryAlt}}
+		<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
+
+		<a class="btn btn-default pull-right" href="{{pathFor 'results'}}">
+			Results <i class="fa fa-angle-double-right"></i>
+		</a>
+
+		<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'connectivity'}}">
+			<i class="fa fa-angle-double-left"></i> Connectivity Matrix
+		</a>
+	</div>
+
+	{{> objectivesAccordion}}
+	{{> alternativesAccordion}}
+
+	<div class="handsontable top-buffer" id="probability-matrix"></div>
+</template>
+
+<template name="switcheryObj">
+	<input type="checkbox" class="js-switch-obj" />
+</template>
+
+<template name="switcheryAlt">
+	<input type="checkbox" class="js-switch-alt" />
+</template>

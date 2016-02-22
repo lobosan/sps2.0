@@ -1,0 +1,1 @@
+ProbabilityMatrix = new Mongo.Collection("probabilityMatrix");

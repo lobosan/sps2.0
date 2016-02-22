@@ -1,0 +1,65 @@
+<template name="scenarios">
+	{{>addScenario}}
+
+	<div class="row page-header page-header-sps">
+		<div class="pull-left">
+			<h2>Scenarios</h2>
+		</div>
+		<div class="pull-right back-next-btn">
+			{{#if isActiveScenario}}
+				<span class="legend-active-scenario" title="Active Scenario">
+					<i class="active-scenario fa fa-toggle-on"></i> {{activeScenario.name}}
+					{{#if notEqual activeScenario.turn 0}} - Turn: #{{activeScenario.turn}}{{/if}}
+				</span>
+			{{/if}}
+		</div>
+	</div>
+
+	<div class="clearfix">
+		<h3 class="pull-left bottom-buffer">Current scenarios</h3>
+		<button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#addScenario">
+			<i class="fa fa-plus-circle"></i> Add Scenario
+		</button>
+	</div>
+	{{> tabular table=TabularTables.CurrentScenarios class="table table-striped table-bordered table-condensed"}}
+
+	<h3 class="bottom-buffer">Public scenarios</h3>
+	{{> tabular table=TabularTables.PublicScenarios class="table table-striped table-bordered table-condensed"}}
+
+	<h3 class="bottom-buffer">Private scenarios</h3>
+	{{> tabular table=TabularTables.PrivateScenarios class="table table-striped table-bordered table-condensed"}}
+</template>
+
+<template name="joinScenario">
+	{{#if isAuthor}}Owner{{/if}}
+	{{#if isGuest}}
+		{{#if equal state "Open"}}
+			<button class="btn btn-default btn-action-sps leave-scenario">LEAVE</button>
+		{{else}}
+			Joined
+		{{/if}}
+	{{/if}}
+	{{#unless isJoined}}
+		{{#if equal state "Open"}}
+			<button class="btn btn-default btn-action-sps join-scenario">JOIN</button>
+		{{else}}
+			-
+		{{/if}}
+	{{/unless}}
+</template>
+
+<template name="evaluateScenario">
+	{{#if equal state "Started"}}
+		<a id="btn-connectivity-matrix" class="btn btn-default btn-action-sps fa fa-th evaluate" href="{{pathFor 'connectivity'}}"></a>
+	{{else}}
+		-
+	{{/if}}
+</template>
+
+<template name="resultsScenario">
+	{{#if notEqual state "Open"}}
+		<a class="btn btn-default btn-action-sps fa fa-bar-chart results" href="{{pathFor 'results'}}"></a>
+	{{else}}
+		-
+	{{/if}}
+</template>

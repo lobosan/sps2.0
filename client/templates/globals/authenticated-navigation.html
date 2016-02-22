@@ -1,21 +1,27 @@
 <template name="authenticatedNavigation">
-  <ul class="nav navbar-nav">
-    {{#if isInRole 'admin'}}
-      <li class="{{currentRoute 'users'}}"><a href="{{pathFor 'users'}}">Users</a></li>
-    {{/if}}
+	<ul class="nav navbar-nav navbar-right">
+		{{#if isInRole 'admin,manager'}}
+			<li><a href="{{pathFor 'scenarios'}}"><i class="glyphicon glyphicon-road"></i> Scenarios</a></li>
+			<li><a href="{{pathFor 'objectives'}}"><i class="glyphicon glyphicon-record"></i> Objectives</a></li>
+			<li><a href="{{pathFor 'alternatives'}}"><i class="glyphicon glyphicon-transfer"></i> Alternatives</a></li>
+			<li><a href="{{pathFor 'inviteActors'}}"><i class="glyphicon glyphicon-envelope"></i> Guests</a></li>
+			{{#if isAdmin}}
+				<li><a href="{{pathFor 'adminScenario'}}"><i class="glyphicon glyphicon-flag"></i> Admin</a></li>
+			{{/if}}
+			{{#if equal evaluateScenario.state "Started"}}
+				<li><a href="{{pathFor 'connectivity'}}"><i class="glyphicon glyphicon-th"></i> Evaluation</a></li>
+			{{/if}}
+		{{/if}}
 
-    {{#if isInRole 'admin,manager'}}
-      <li class="{{currentRoute 'managers'}}"><a href="{{pathFor 'managers'}}">Managers</a></li>
-    {{/if}}
-    
-    <li class="{{currentRoute 'employees'}}"><a href="{{pathFor 'employees'}}">Employees</a></li>
-  </ul>
-  <ul class="nav navbar-nav navbar-right">
-    <li class="dropdown">
-      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{currentUser.emails.[0].address}} <span class="caret"></span></a>
-      <ul class="dropdown-menu" role="menu">
-        <li class="logout"><a href="#">Logout</a></li>
-      </ul>
-    </li>
-  </ul>
+		{{#if isInRole 'admin'}}
+			<li class="{{currentRoute 'users'}}"><a href="{{pathFor 'users'}}"><i class="glyphicon glyphicon-user"></i> Users</a></li>
+		{{/if}}
+
+		<li class="dropdown">
+			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{currentUser.profile.name}} <span class="caret"></span></a>
+			<ul class="dropdown-menu" role="menu">
+				<li class="logout"><a href="#">Logout</a></li>
+			</ul>
+		</li>
+	</ul>
 </template>

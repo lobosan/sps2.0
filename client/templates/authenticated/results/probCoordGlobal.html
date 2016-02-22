@@ -1,0 +1,18 @@
+<template name="probCoordGlobal">
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Alternative Name</th>
+            <th>Probability</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each probCoord}}
+            <tr class="objectiveRow">
+                <td class="col-md-5">{{altName}}</td>
+                <td class="col-md-7">{{probability}} %</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</template>

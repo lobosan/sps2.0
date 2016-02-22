@@ -1,0 +1,1 @@
+ConnectivityMatrix = new Mongo.Collection("connectivityMatrix");

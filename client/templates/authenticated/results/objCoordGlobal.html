@@ -1,0 +1,18 @@
+<template name="objCoordGlobal">
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Objective Name</th>
+            <th>Coordinates</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each objCoord}}
+            <tr class="objectiveRow">
+                <td class="col-md-5">{{objName}}</td>
+                <td class="col-md-7">{{coordinates}}</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
+</template>
