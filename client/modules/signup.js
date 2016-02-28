@@ -1,14 +1,24 @@
-let signup = ( options ) => {
-  _validate( options.form, options.template );
+let form,
+  template;
+
+let signup = (options) => {
+  form = options.form;
+  template = options.template;
+
+  _validate(form, template);
 };
 
-let _validate = ( form, template ) => {
-  $( form ).validate( validation( template ) );
+let _validate = () => {
+  $(form).validate(validation());
 };
 
-let validation = ( template ) => {
+let validation = () => {
   return {
     rules: {
+      userName: {
+        required: true,
+        minlength: 6
+      },
       emailAddress: {
         required: true,
         email: true
@@ -19,6 +29,10 @@ let validation = ( template ) => {
       }
     },
     messages: {
+      userName: {
+        required: 'Need an user name here.',
+        minlength: 'Use at least six characters, please.'
+      },
       emailAddress: {
         required: 'Need an email address here.',
         email: 'Is this email address legit?'
@@ -28,21 +42,37 @@ let validation = ( template ) => {
         minlength: 'Use at least six characters, please.'
       }
     },
-    submitHandler() { _handleSignup( template ); }
+    submitHandler() {
+      _handleSignup();
+    }
   };
 };
 
-let _handleSignup = ( template ) => {
-  let user = {
-    email: template.find( '[name="emailAddress"]' ).value,
-    password: template.find( '[name="password"]' ).value
-  };
+let _handleSignup = () => {
+  let password = template.find('[name="password"]').value,
+    user = {
+      profile: {
+        name: template.find('[name="userName"]').value
+      },
+      email: template.find('[name="emailAddress"]').value,
+      password: Accounts._hashPassword(password)
+    };
 
-  Accounts.createUser( user, ( error ) => {
-    if ( error ) {
-      Bert.alert( error.reason, 'danger' );
+  Meteor.call('createAccount', user, (error, response) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger');
     } else {
-      Bert.alert( 'Welcome!', 'success' );
+      _loginUser(user.email, password, response);
+    }
+  });
+};
+
+let _loginUser = (email, password, welcomeMessage) => {
+  Meteor.loginWithPassword(email, password, (error, response) => {
+    if (error) {
+      Bert.alert(error.reason, 'danger');
+    } else {
+      Bert.alert(welcomeMessage, 'success');
     }
   });
 };

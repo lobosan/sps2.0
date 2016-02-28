@@ -8,11 +8,12 @@
           <input type="email" name="emailAddress" class="form-control" placeholder="Email Address">
         </div>
         <div class="form-group">
-          <label for="password"><span class="pull-left">Password</span> <a class="pull-right" href="{{pathFor 'recover-password'}}">Forgot Password?</a></label>
+          <label for="password"><span class="pull-left">Password</span></label>
           <input type="password" name="password" class="form-control" placeholder="Password">
         </div>
         <div class="form-group">
           <input type="submit" class="btn btn-success" value="Login">
+					<a class="pull-right" href="{{pathFor 'recover-password'}}">Forgot Password?</a>
         </div>
       </form>
       <p>Don't have an account? <a href="{{pathFor 'signup'}}">Sign Up</a>.</p>
