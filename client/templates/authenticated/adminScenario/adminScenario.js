@@ -176,7 +176,7 @@ Template.adminScenario.events({
             });
             /*** End Probability Matrix ***/
 
-            Router.go('connectivity');
+            FlowRouter.go('connectivity');
             swal("Started!", "Your scenario has been started", "success");
           }
         );
@@ -299,7 +299,7 @@ Template.adminScenario.events({
         }
         /*** End Probability Matrix Other Turns ***/
 
-        Router.go('connectivity');
+        FlowRouter.go('connectivity');
       }
     }
   },

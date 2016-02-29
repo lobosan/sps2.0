@@ -121,7 +121,7 @@ AutoForm.hooks({
           $('#addScenario').modal('hide');
           $('body').removeClass('modal-open');
           $('.modal-backdrop').remove();
-          Router.go('objectives');
+          FlowRouter.go('objectives');
         } else {
           return false;
         }
