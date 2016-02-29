@@ -1,17 +1,5 @@
 Invitations = new Meteor.Collection( 'invitations' );
 
-Invitations.allow({
-  insert: () => false,
-  update: () => false,
-  remove: () => false
-});
-
-Invitations.deny({
-  insert: () => true,
-  update: () => true,
-  remove: () => true
-});
-
 let InvitationsSchema = new SimpleSchema({
   email: {
     type: String,

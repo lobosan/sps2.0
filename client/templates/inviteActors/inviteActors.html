@@ -1,5 +1,5 @@
 <template name="inviteActors">
-	{{> header currentPage="Invite Actors"}}
+	{{> defaultTitle currentPage="Invite Actors"}}
 
 	<div class="bottom-buffer">
 		<button id="inviteActorsBtn" class="btn btn-success"><i class="fa fa-send"></i> Send Invitations</button>
@@ -44,6 +44,6 @@
 		<td width="30px">
 			<input type="checkbox" class="actorId" value="{{_id}}"/>
 		</td>
-		<td>{{username}}</td>
+		<td>{{profile.name}}</td>
 	</tr>
 </template>

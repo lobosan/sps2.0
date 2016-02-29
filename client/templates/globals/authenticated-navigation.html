@@ -1,15 +1,15 @@
 <template name="authenticatedNavigation">
 	<ul class="nav navbar-nav navbar-right">
 		{{#if isInRole 'admin,manager'}}
-			<li><a href="{{pathFor 'scenarios'}}"><i class="glyphicon glyphicon-road"></i> Scenarios</a></li>
-			<li><a href="{{pathFor 'objectives'}}"><i class="glyphicon glyphicon-record"></i> Objectives</a></li>
-			<li><a href="{{pathFor 'alternatives'}}"><i class="glyphicon glyphicon-transfer"></i> Alternatives</a></li>
-			<li><a href="{{pathFor 'inviteActors'}}"><i class="glyphicon glyphicon-envelope"></i> Guests</a></li>
+			<li class="{{currentRoute 'scenarios'}}"><a href="{{pathFor 'scenarios'}}"><i class="glyphicon glyphicon-road"></i> Scenarios</a></li>
+			<li class="{{currentRoute 'objectives'}}"><a href="{{pathFor 'objectives'}}"><i class="glyphicon glyphicon-record"></i> Objectives</a></li>
+			<li class="{{currentRoute 'alternatives'}}"><a href="{{pathFor 'alternatives'}}"><i class="glyphicon glyphicon-transfer"></i> Alternatives</a></li>
+			<li class="{{currentRoute 'inviteActors'}}"><a href="{{pathFor 'inviteActors'}}"><i class="glyphicon glyphicon-envelope"></i> Guests</a></li>
 			{{#if isAdmin}}
-				<li><a href="{{pathFor 'adminScenario'}}"><i class="glyphicon glyphicon-flag"></i> Admin</a></li>
+				<li class="{{currentRoute 'adminScenario'}}"><a href="{{pathFor 'adminScenario'}}"><i class="glyphicon glyphicon-flag"></i> Admin</a></li>
 			{{/if}}
 			{{#if equal evaluateScenario.state "Started"}}
-				<li><a href="{{pathFor 'connectivity'}}"><i class="glyphicon glyphicon-th"></i> Evaluation</a></li>
+				<li class="{{currentRoute 'connectivity'}}"><a href="{{pathFor 'connectivity'}}"><i class="glyphicon glyphicon-th"></i> Evaluation</a></li>
 			{{/if}}
 		{{/if}}
 

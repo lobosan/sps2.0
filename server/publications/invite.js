@@ -1,4 +1,4 @@
 Meteor.publish( 'invite', function( token ) {
-  check( token, String );
+  check(token, String);
   return Invitations.find( { "token": token } );
 });

@@ -3,6 +3,7 @@ let startup = () => {
   _setBrowserPolicies();
   _generateAccounts();
   _setAdmins();
+  _security();
 };
 
 let _setEnvironmentVariables = () => {
@@ -15,5 +16,7 @@ let _setBrowserPolicies = () => {};
 let _generateAccounts = () => Modules.server.generateAccounts();
 
 let _setAdmins = () => Modules.server.setAdmins();
+
+var _security = () => Modules.server.security();
 
 Modules.server.startup = startup;

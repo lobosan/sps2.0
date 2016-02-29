@@ -1,9 +1,9 @@
 <template name="default">
-	{{>bertAlert}}
-	{{>header}}
+	{{> bertAlert}}
+	{{> header}}
 	<div class="container">
 		{{#if loggingIn}}
-			{{> loading}}
+			{{> spinner}}
 		{{else}}
 			{{#if authenticated}}
 				{{#unless redirectAuthenticated}}

@@ -7,7 +7,7 @@ let administrators = [
 ];
 
 let generateAccounts = () => {
-  let fakeUserCount = 3,
+  let fakeUserCount = 0,
       usersExist    = _checkIfAccountsExist( administrators.length + fakeUserCount );
 
   if ( !usersExist ) {

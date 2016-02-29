@@ -15,5 +15,14 @@ Meteor.methods({
     } catch( exception ) {
       return exception;
     }
+  },
+  revokeInvitation( inviteId ) {
+    check( inviteId, String );
+
+    try {
+      Invitations.remove( inviteId );
+    } catch( exception ) {
+      return exception;
+    }
   }
 });

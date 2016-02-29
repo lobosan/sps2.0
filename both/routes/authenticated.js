@@ -22,7 +22,7 @@ const authenticatedRoutes = FlowRouter.group({
 });
 
 authenticatedRoutes.route('/scenarios', {
-  name: 'users',
+  name: 'scenarios',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'scenarios'});
@@ -30,7 +30,7 @@ authenticatedRoutes.route('/scenarios', {
 });
 
 authenticatedRoutes.route('/objectives', {
-  name: 'users',
+  name: 'objectives',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'objectives'});
@@ -38,7 +38,7 @@ authenticatedRoutes.route('/objectives', {
 });
 
 authenticatedRoutes.route('/alternatives', {
-  name: 'users',
+  name: 'alternatives',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'alternatives'});
@@ -46,7 +46,7 @@ authenticatedRoutes.route('/alternatives', {
 });
 
 authenticatedRoutes.route('/inviteActors', {
-  name: 'users',
+  name: 'inviteActors',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'inviteActors'});
@@ -54,7 +54,7 @@ authenticatedRoutes.route('/inviteActors', {
 });
 
 authenticatedRoutes.route('/adminScenario', {
-  name: 'users',
+  name: 'adminScenario',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'adminScenario'});
@@ -62,7 +62,7 @@ authenticatedRoutes.route('/adminScenario', {
 });
 
 authenticatedRoutes.route('/connectivity', {
-  name: 'users',
+  name: 'connectivity',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'connectivity'});
@@ -70,7 +70,7 @@ authenticatedRoutes.route('/connectivity', {
 });
 
 authenticatedRoutes.route('/probability', {
-  name: 'users',
+  name: 'probability',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'probability'});
@@ -78,7 +78,7 @@ authenticatedRoutes.route('/probability', {
 });
 
 authenticatedRoutes.route('/results', {
-  name: 'users',
+  name: 'results',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'results'});
