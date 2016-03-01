@@ -9,6 +9,13 @@ const publicRoutes = FlowRouter.group({
   triggersEnter: [ publicRedirect ]
 });
 
+publicRoutes.route( '/', {
+  name: 'home',
+  action() {
+    BlazeLayout.render( 'default', { yield: 'home' } );
+  }
+});
+
 publicRoutes.route( '/invite/:token', {
   name: 'invite',
   action() {

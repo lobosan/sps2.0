@@ -1,3 +1,7 @@
+Meteor.autosubscribe(function () {
+  Meteor.subscribe('probabilityMatrix', Session.get('active_scenario'));
+});
+
 Template.probability.onRendered(function () {
 
   var elemObj = this.find('.js-switch-obj');
@@ -35,7 +39,7 @@ Template.probability.onRendered(function () {
     colHeaders: colHeaders,
     rowHeaders: rowHeaders,
     height: '450',
-    width: $('.container').width(),
+    /*width: $('.container').width(),*/
     maxRows: numAlt,
     maxCols: numObj,
     columns: columns,

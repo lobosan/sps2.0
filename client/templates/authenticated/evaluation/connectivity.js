@@ -1,3 +1,7 @@
+Meteor.autosubscribe(function () {
+  Meteor.subscribe('connectivityMatrix', Session.get('active_scenario'));
+});
+
 Template.connectivity.onRendered(function () { // Runs when the DOM is ready
 
   var elem = this.find('.js-switch-obj');
@@ -28,7 +32,7 @@ Template.connectivity.onRendered(function () { // Runs when the DOM is ready
     colHeaders: arrayRowsCols,
     rowHeaders: arrayRowsCols,
     height: '450',
-    width: $('.container').width(),
+    /*width: $('.container').width(),*/
     maxRows: numObj,
     maxCols: numObj,
     columns: columns,
