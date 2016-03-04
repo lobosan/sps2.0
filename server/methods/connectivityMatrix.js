@@ -1,5 +1,5 @@
 Meteor.methods({
-    removeAllConMat: function () {
-        return ConnectivityMatrix.remove({});
-    }
+  removeAllConMat: function () {
+    return ConnectivityMatrix.remove({});
+  }
 });

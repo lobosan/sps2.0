@@ -1,5 +1,5 @@
 Meteor.methods({
-    removeAllProbMat: function () {
-        return ProbabilityMatrix.remove({});
-    }
+  removeAllProbMat: function () {
+    return ProbabilityMatrix.remove({});
+  }
 });

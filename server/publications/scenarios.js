@@ -1,3 +1,3 @@
 Meteor.publish('scenarioList', function () {
-    return Scenarios.find({});
+  return Scenarios.find({});
 });

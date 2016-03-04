@@ -32,7 +32,6 @@ Template.connectivity.onRendered(function () { // Runs when the DOM is ready
     colHeaders: arrayRowsCols,
     rowHeaders: arrayRowsCols,
     height: '450',
-    /*width: $('.container').width(),*/
     maxRows: numObj,
     maxCols: numObj,
     columns: columns,

@@ -39,7 +39,6 @@ Template.probability.onRendered(function () {
     colHeaders: colHeaders,
     rowHeaders: rowHeaders,
     height: '450',
-    /*width: $('.container').width(),*/
     maxRows: numAlt,
     maxCols: numObj,
     columns: columns,
