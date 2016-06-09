@@ -1,6 +1,6 @@
 Meteor.subscribe("actorList");
 
-Template.inviteActors.helpers({
+Template.contacts.helpers({
   actorList: function () {
     var scenarioRow = Scenarios.findOne({_id: Session.get('active_scenario')});
     var guests_ids = [scenarioRow.author];
@@ -15,7 +15,7 @@ Template.inviteActors.helpers({
   }
 });
 
-Template.inviteActors.events({
+Template.contacts.events({
   'click #inviteActorsBtn': function (evt, tmpl) {
     var userids = $('.actorId:checkbox:checked').map(function () {
       return this.value;

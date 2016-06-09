@@ -13,7 +13,6 @@ twbs:bootstrap
 meteorhacks:npm
 themeteorchef:bert
 meteorhacks:ssr
-standard-minifiers
 npm-container
 ecmascript
 digilord:faker
@@ -45,3 +44,5 @@ chrismbeckett:toastr
 kevohagan:sweetalert
 ongoworks:security
 msavin:mongol
+standard-minifier-css
+standard-minifier-js

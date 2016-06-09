@@ -2,23 +2,47 @@
   {{#if isInRole 'admin'}}
     {{> sendInvitationModal}}
 
-    <h4 class="page-header">Users</h4>
-    <table class="table table-bordered">
+		{{> defaultTitle currentPage="Contacts"}}
+
+		<div class="bottom-buffer">
+			<button id="inviteActorsBtn" class="btn btn-success"><i class="fa fa-send"></i> Send Invitations</button>
+
+			{{#if isAdmin}}
+				<a class="btn btn-default pull-right" href="{{pathFor 'adminScenario'}}">
+					Scenario Details <i class="fa fa-angle-double-right"></i>
+				</a>
+				<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'alternatives'}}">
+					<i class="fa fa-angle-double-left"></i> Add Alternatives
+				</a>
+			{{else}}
+				<a class="btn btn-default pull-right" href="{{pathFor 'alternatives'}}">
+					<i class="fa fa-angle-double-left"></i> Add Alternatives
+				</a>
+			{{/if}}
+		</div>
+
+    <table class="table table-bordered table-striped table-hover top-buffer">
       <thead>
         <tr>
-          <th>Email Address</th>
+					<th></th>
+					<th class="text-center">Actor</th>
+          <th class="text-center">Email Address</th>
           <th class="text-center">Role</th>
         </tr>
       </thead>
       <tbody>
         {{#each users}}
-          <tr>
+          <tr class="actorRow">
+						<td width="30px" class="text-middle">
+							<input type="checkbox" class="actorId" value="{{_id}}"/>
+						</td>
+						<td class="text-middle">{{profile.name}}</td>
             <td class="text-left text-middle">{{#if isCurrentUser _id}}<label class="label label-success">You!</label>{{/if}} {{emails.[0].address}}</td>
             <td>
               <select {{disableIfAdmin _id}} name="userRole" class="form-control">
                 <option selected="{{selected roles.[0] 'admin'}}" value="admin">Admin</option>
-                <option selected="{{selected roles.[0] 'manager'}}" value="manager">Manager</option>
-                <option selected="{{selected roles.[0] 'employee'}}" value="employee">Employee</option>
+                <option selected="{{selected roles.[0] 'private'}}" value="private">Private</option>
+                <option selected="{{selected roles.[0] 'public'}}" value="public">Public</option>
               </select>
             </td>
           </tr>
@@ -27,8 +51,8 @@
     </table>
 
     <div class="page-header clearfix">
-      <h4 class="pull-left">Invitations</h4>
-      <button class="btn btn-success pull-right" data-toggle="modal" data-target="#send-invitation-modal">Send Invitation</button>
+      <h4 class="pull-left">New contacts</h4>
+      <button class="btn btn-success pull-right" data-toggle="modal" data-target="#send-invitation-modal">Add contact</button>
     </div>
     {{#if hasInvitations}}
       <table class="table table-bordered">

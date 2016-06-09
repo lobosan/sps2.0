@@ -45,11 +45,11 @@ authenticatedRoutes.route('/alternatives', {
   }
 });
 
-authenticatedRoutes.route('/inviteActors', {
-  name: 'inviteActors',
+authenticatedRoutes.route('/contacts', {
+  name: 'contacts',
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
-    BlazeLayout.render('default', {yield: 'inviteActors'});
+    BlazeLayout.render('default', {yield: 'contacts'});
   }
 });
 
