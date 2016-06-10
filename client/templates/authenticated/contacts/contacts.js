@@ -1,4 +1,7 @@
-Meteor.subscribe("actorList");
+Template.contacts.onCreated(() => {
+  Template.instance().subscribe('actorList');
+  Template.instance().subscribe('openInvitations');
+});
 
 Template.contacts.helpers({
   actorList: function () {
@@ -12,6 +15,17 @@ Template.contacts.helpers({
       return invite_actors;
     else
       return false;
+  },
+  hasInvitations: function () {
+    var invitations = Invitations.find().count();
+    return invitations < 1 ? false : true;
+  },
+  invitations: function () {
+    var invitations = Invitations.find();
+
+    if (invitations) {
+      return invitations;
+    }
   }
 });
 
@@ -50,6 +64,17 @@ Template.contacts.events({
           }
         }
       );
+    }
+  },
+  'click .revoke-invite': function (event, template) {
+    if (confirm("Are you sure? This is permanent.")) {
+      Meteor.call("revokeInvitation", this._id, function (error, response) {
+        if (error) {
+          Bert.alert(error.reason, "warning");
+        } else {
+          Bert.alert("Invitation revoked!", "success");
+        }
+      });
     }
   }
 });

@@ -1,5 +1,6 @@
-Meteor.autosubscribe(function () {
-  Meteor.subscribe('connectivityMatrix', Session.get('active_scenario'));
+Template.connectivity.onCreated(() => {
+  Template.instance().subscribe('activeScenario', Session.get('active_scenario'));
+  Template.instance().subscribe('connectivityMatrix', Session.get('active_scenario'));
 });
 
 Template.connectivity.onRendered(function () { // Runs when the DOM is ready

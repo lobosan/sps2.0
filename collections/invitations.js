@@ -1,6 +1,10 @@
-Invitations = new Meteor.Collection( 'invitations' );
+Invitations = new Meteor.Collection('invitations');
 
 let InvitationsSchema = new SimpleSchema({
+  userName: {
+    type: String,
+    label: "User name."
+  },
   email: {
     type: String,
     label: "Email to send invitation to."
@@ -19,4 +23,4 @@ let InvitationsSchema = new SimpleSchema({
   }
 });
 
-Invitations.attachSchema( InvitationsSchema );
+Invitations.attachSchema(InvitationsSchema);

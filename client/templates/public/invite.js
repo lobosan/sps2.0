@@ -1,34 +1,34 @@
-Template.invite.onCreated( () => {
-  Template.instance().subscribe( 'invite', FlowRouter.current().params.token );
+Template.invite.onCreated(() => {
+  Template.instance().subscribe('invite', FlowRouter.current().params.token);
 });
 
 Template.invite.helpers({
-  invitation: function() {
+  invitation: function () {
     var invite = Invitations.findOne();
 
-    if ( invite ) {
+    if (invite) {
       return invite;
     }
   }
 });
 
 Template.invite.events({
-  'submit form': function( event, template ) {
+  'submit form': function (event, template) {
     event.preventDefault();
 
-    let password = template.find( '[name="password"]' ).value;
+    let password = template.find('[name="password"]').value;
 
     let user = {
-      email: template.find( '[name="emailAddress"]' ).value,
-      password: Accounts._hashPassword( password ),
+      email: template.find('[name="emailAddress"]').value,
+      password: Accounts._hashPassword(password),
       token: FlowRouter.current().params.token
     };
 
-    Meteor.call( 'acceptInvitation', user, function( error, response ) {
-      if ( error ) {
-        Bert.alert( error.reason, 'warning' );
+    Meteor.call('acceptInvitation', user, function (error, response) {
+      if (error) {
+        Bert.alert(error.reason, 'warning');
       } else {
-        Meteor.loginWithPassword( user.email, password );
+        Meteor.loginWithPassword(user.email, password);
       }
     });
   }

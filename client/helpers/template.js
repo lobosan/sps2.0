@@ -27,7 +27,7 @@ Template.registerHelper('activeScenario', function () {
   return Scenarios.findOne({_id: Session.get('active_scenario')});
 });
 
-Template.registerHelper('isAdmin', function () {
+Template.registerHelper('isScenarioAuthor', function () {
   if (Scenarios.find({ author: Meteor.userId(), _id: Session.get('active_scenario')}).count() === 1)
     return true;
   else

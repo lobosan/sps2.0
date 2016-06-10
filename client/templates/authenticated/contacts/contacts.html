@@ -1,0 +1,81 @@
+<template name="contacts">
+	{{> sendInvitationModal}}
+
+	{{> defaultTitle currentPage="Contacts"}}
+
+	<div class="bottom-buffer">
+		<button id="inviteActorsBtn" class="btn btn-success"><i class="fa fa-plus-circle"></i> Add selected 	contacts to scenario</button>
+
+		<button class="btn btn-success" data-toggle="modal" data-target="#send-invitation-modal"><i class="fa fa-users"></i> Invite to join SPS</button>
+
+		{{#if isScenarioAuthor}}
+		<a class="btn btn-default pull-right" href="{{pathFor 'adminScenario'}}">
+			Scenario Details <i class="fa fa-angle-double-right"></i>
+		</a>
+		<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'alternatives'}}">
+			<i class="fa fa-angle-double-left"></i> Add Alternatives
+		</a>
+		{{else}}
+		<a class="btn btn-default pull-right" href="{{pathFor 'alternatives'}}">
+			<i class="fa fa-angle-double-left"></i> Add Alternatives
+		</a>
+		{{/if}}
+	</div>
+
+	{{#if actorList}}
+	<table class="table table-bordered table-striped table-hover top-buffer">
+		<thead>
+		<tr>
+			<th></th>
+			<th class="text-center">Actor</th>
+			<th class="text-center">Email</th>
+		</tr>
+		</thead>
+		<tbody>
+		{{#each actorList}}
+			<tr class="actorRow">
+				<td width="30px">
+					<input type="checkbox" class="actorId" value="{{_id}}"/>
+				</td>
+				<td>{{profile.name}}</td>
+				<td>{{emails.[0].address}}</td>
+			</tr>
+		{{/each}}
+		</tbody>
+	</table>
+	{{else}}
+		<div class="no-data">
+			There's no more users to add to the current scenario
+		</div>
+	{{/if}}
+
+	<div class="page-header clearfix">
+		<h4 class="pull-left">Pending invitations</h4>
+	</div>
+	{{#if hasInvitations}}
+		<table class="table table-bordered">
+			<thead>
+			<tr>
+				<th>Email Address</th>
+				<th class="text-center">Role</th>
+				<th class="text-center">Date Sent</th>
+				<th></th>
+			</tr>
+			</thead>
+			<tbody>
+			{{#each invitations}}
+				<tr>
+					<td class="text-left text-middle">{{email}}</td>
+					<td class="text-center text-middle">{{role}}</td>
+					<td class="text-center text-middle">{{humanDate date}}</td>
+					<td class="text-center">
+						<button type="button" class="btn btn-danger revoke-invite">Revoke</button>
+					</td>
+				</tr>
+			{{/each}}
+			</tbody>
+		</table>
+	{{else}}
+		<p class="alert alert-warning">No open invitations.</p>
+	{{/if}}
+</template>

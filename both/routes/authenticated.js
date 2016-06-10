@@ -10,8 +10,8 @@ const blockUnauthorizedAdmin = (context, redirect) => {
   }
 };
 
-const blockUnauthorizedManager = (context, redirect) => {
-  if (Meteor.userId() && !Roles.userIsInRole(Meteor.userId(), ['admin', 'manager'])) {
+const blockUnauthorizedRole = (context, redirect) => {
+  if (Meteor.userId() && !Roles.userIsInRole(Meteor.userId(), ['admin', 'private', 'public'])) {
     Modules.both.redirectUser({redirect: redirect});
   }
 };
@@ -23,7 +23,7 @@ const authenticatedRoutes = FlowRouter.group({
 
 authenticatedRoutes.route('/scenarios', {
   name: 'scenarios',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'scenarios'});
   }
@@ -31,7 +31,7 @@ authenticatedRoutes.route('/scenarios', {
 
 authenticatedRoutes.route('/objectives', {
   name: 'objectives',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'objectives'});
   }
@@ -39,7 +39,7 @@ authenticatedRoutes.route('/objectives', {
 
 authenticatedRoutes.route('/alternatives', {
   name: 'alternatives',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'alternatives'});
   }
@@ -47,7 +47,7 @@ authenticatedRoutes.route('/alternatives', {
 
 authenticatedRoutes.route('/contacts', {
   name: 'contacts',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'contacts'});
   }
@@ -55,7 +55,7 @@ authenticatedRoutes.route('/contacts', {
 
 authenticatedRoutes.route('/adminScenario', {
   name: 'adminScenario',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'adminScenario'});
   }
@@ -63,7 +63,7 @@ authenticatedRoutes.route('/adminScenario', {
 
 authenticatedRoutes.route('/connectivity', {
   name: 'connectivity',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'connectivity'});
   }
@@ -71,7 +71,7 @@ authenticatedRoutes.route('/connectivity', {
 
 authenticatedRoutes.route('/probability', {
   name: 'probability',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'probability'});
   }
@@ -79,7 +79,7 @@ authenticatedRoutes.route('/probability', {
 
 authenticatedRoutes.route('/results', {
   name: 'results',
-  triggersEnter: [blockUnauthorizedAdmin],
+  triggersEnter: [blockUnauthorizedRole],
   action() {
     BlazeLayout.render('default', {yield: 'results'});
   }
@@ -90,20 +90,5 @@ authenticatedRoutes.route('/users', {
   triggersEnter: [blockUnauthorizedAdmin],
   action() {
     BlazeLayout.render('default', {yield: 'users'});
-  }
-});
-
-authenticatedRoutes.route('/managers', {
-  name: 'managers',
-  triggersEnter: [blockUnauthorizedManager],
-  action() {
-    BlazeLayout.render('default', {yield: 'managers'});
-  }
-});
-
-authenticatedRoutes.route('/employees', {
-  name: 'employees',
-  action() {
-    BlazeLayout.render('default', {yield: 'employees'});
   }
 });

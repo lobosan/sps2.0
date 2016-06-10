@@ -1,12 +1,14 @@
 Meteor.methods({
   sendInvitation(invitation) {
     check(invitation, {
+      userName: String,
       email: String,
       role: String
     });
 
     try {
       Modules.server.sendInvitation({
+        userName: invitation.userName,
         email: invitation.email,
         token: Random.hexString(16),
         role: invitation.role,
