@@ -1,16 +1,21 @@
 <template name="connectivity">
-	{{> defaultTitle currentPage = "Connectivity Matrix"}}
-	<div class="bottom-buffer">
-		Objectives {{> switcheryObj}}
-		<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
+	{{#if isInRole 'admin, private, public'}}
+		{{#if Template.subscriptionsReady}}
+			{{> defaultTitle currentPage = "Connectivity Matrix"}}
+			<div class="bottom-buffer">
+				Objectives {{> switcheryObj}}
+				<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
 
-		<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
-			Probability Matrix <i class="fa fa-angle-double-right"></i>
-		</a>
-	</div>
+				<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
+					Probability Matrix <i class="fa fa-angle-double-right"></i>
+				</a>
+			</div>
 
-	{{> objectivesAccordion}}
+			{{> objectivesAccordion}}
 
-	<div class="handsontable top-buffer" id="connectivity-matrix">
-	</div>
+			<div class="handsontable top-buffer" id="connectivity-matrix"></div>
+		{{else}}
+			{{> spinner}}
+		{{/if}}
+	{{/if}}
 </template>

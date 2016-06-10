@@ -1,5 +1,10 @@
-Meteor.autosubscribe(function () {
-  Meteor.subscribe('alternativeList', Session.get('active_scenario'));
+Template.alternativesTable.onCreated(function () {
+  let self = this;
+  self.ready = new ReactiveVar();
+  self.autorun(function () {
+    let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
+    self.ready.set(handleAlternatives.ready());
+  });
 });
 
 Template.alternativesTable.helpers({

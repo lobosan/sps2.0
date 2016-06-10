@@ -1,30 +1,36 @@
 <template name="probability">
-	{{> defaultTitle currentPage = "Probability Matrix"}}
+	{{#if isInRole 'admin, private, public'}}
+		{{#if Template.subscriptionsReady}}
+			{{> defaultTitle currentPage = "Probability Matrix"}}
 
-	<div class="bottom-buffer">
-		Objectives <span class="switcher-separator">{{> switcheryObj}}</span>
-		Alternatives {{> switcheryAlt}}
-		<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
+			<div class="bottom-buffer">
+				Objectives <span class="switcher-separator">{{> switcheryObj}}</span>
+				Alternatives {{> switcheryAlt}}
+				<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
 
-		<a class="btn btn-default pull-right" href="{{pathFor 'results'}}">
-			Results <i class="fa fa-angle-double-right"></i>
-		</a>
+				<a class="btn btn-default pull-right" href="{{pathFor 'results'}}">
+					Results <i class="fa fa-angle-double-right"></i>
+				</a>
 
-		<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'connectivity'}}">
-			<i class="fa fa-angle-double-left"></i> Connectivity Matrix
-		</a>
-	</div>
+				<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'connectivity'}}">
+					<i class="fa fa-angle-double-left"></i> Connectivity Matrix
+				</a>
+			</div>
 
-	{{> objectivesAccordion}}
-	{{> alternativesAccordion}}
+			{{> objectivesAccordion}}
+			{{> alternativesAccordion}}
 
-	<div class="handsontable top-buffer" id="probability-matrix"></div>
+			<div class="handsontable top-buffer" id="probability-matrix"></div>
+		{{else}}
+			{{> spinner}}
+		{{/if}}
+	{{/if}}
 </template>
 
 <template name="switcheryObj">
-	<input type="checkbox" class="js-switch-obj" />
+	<input type="checkbox" class="js-switch-obj"/>
 </template>
 
 <template name="switcheryAlt">
-	<input type="checkbox" class="js-switch-alt" />
+	<input type="checkbox" class="js-switch-alt"/>
 </template>

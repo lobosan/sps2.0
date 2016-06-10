@@ -1,5 +1,10 @@
-Meteor.autosubscribe(function () {
-  Meteor.subscribe("objectiveList", Session.get('active_scenario'));
+Template.objectivesTable.onCreated(function () {
+  let self = this;
+  self.ready = new ReactiveVar();
+  self.autorun(function () {
+    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
+    self.ready.set(handleObjectives.ready());
+  });
 });
 
 Template.objectivesTable.helpers({

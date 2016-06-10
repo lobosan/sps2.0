@@ -1,4 +1,5 @@
 Scenarios = new Mongo.Collection("scenarios");
+SubsManagerScenarios = new SubsManager();
 
 Scenarios.attachSchema(new SimpleSchema({
   author: {

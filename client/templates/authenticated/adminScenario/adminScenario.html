@@ -1,109 +1,109 @@
 <template name="adminScenario">
-	{{> defaultTitle currentPage="Admin Scenario"}}
+	{{#if isInRole 'admin, private, public'}}
+		{{#if Template.subscriptionsReady}}
+			{{> defaultTitle currentPage="Admin Scenario"}}
 
-	<div class="bottom-buffer">
-		{{#if notEqual scenarioDetailsAdmin.state "Finished"}}
-			<button id="next-turn" type="button" class="btn btn-success">
-			{{#if equal scenarioDetailsAdmin.turn 0}}
-				<i class="glyphicon glyphicon-play"></i> Start Evaluation
-			{{else}}
-				<i class="glyphicon glyphicon-play"></i> Next Turn
-			{{/if}}
-			</button>
-		{{/if}}
+			<div class="bottom-buffer">
+				{{#if notEqual scenarioDetailsAdmin.state "Finished"}}
+					<button id="next-turn" type="button" class="btn btn-success">
+						{{#if equal scenarioDetailsAdmin.turn 0}}
+							<i class="glyphicon glyphicon-play"></i> Start Evaluation
+						{{else}}
+							<i class="glyphicon glyphicon-play"></i> Next Turn
+						{{/if}}
+					</button>
+				{{/if}}
 
-		{{#if equal scenarioDetailsAdmin.state "Finished"}}
-			<button type="button" class="btn btn-warning" disabled><i class="fa fa-exclamation-circle"></i> Scenario Finished</button>
-		{{else}}
-			<button id="finish-evaluation" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-stop"></i> Finish Evaluation</button>
-		{{/if}}
+				{{#if equal scenarioDetailsAdmin.state "Finished"}}
+					<button type="button" class="btn btn-warning" disabled><i class="fa fa-exclamation-circle"></i> Scenario Finished</button>
+				{{else}}
+					<button id="finish-evaluation" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-stop"></i> Finish Evaluation</button>
+				{{/if}}
 
-		<!--<button type="button" class="btn btn-success {{!selected scenarioDetailsAdmin.state "Finished" "active"}}">Finished</button>-->
+				<!--<button type="button" class="btn btn-success {{!selected scenarioDetailsAdmin.state "Finished" "active"}}">Finished</button>-->
 
-		<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
-			<i class="fa fa-angle-double-left"></i> Invite Actors
-		</a>
-	</div>
+				<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
+					<i class="fa fa-angle-double-left"></i> Invite Actors
+				</a>
+			</div>
 
-	<div>
-		<h3>Details</h3>
-		<p><b>Name: </b>{{scenarioDetailsAdmin.name}}</p>
-		<p class="top-buffer text-justify"><b>Description: </b>{{scenarioDetailsAdmin.description}}</p>
-		<p class="top-buffer"><b>State: </b>{{scenarioDetailsAdmin.state}}</p>
-		<p class="top-buffer"><b>Scope: </b>{{scenarioDetailsAdmin.scope}}</p>
-		<p class="top-buffer"><b>Turn: #</b>{{scenarioDetailsAdmin.turn}}</p>
-	</div>
+			<div>
+				<h3>Details</h3>
+				<p><b>Name: </b>{{scenarioDetailsAdmin.name}}</p>
+				<p class="top-buffer text-justify"><b>Description: </b>{{scenarioDetailsAdmin.description}}</p>
+				<p class="top-buffer"><b>State: </b>{{scenarioDetailsAdmin.state}}</p>
+				<p class="top-buffer"><b>Scope: </b>{{scenarioDetailsAdmin.scope}}</p>
+				<p class="top-buffer"><b>Turn: #</b>{{scenarioDetailsAdmin.turn}}</p>
+			</div>
 
-	<div>{{> guestsScenarioList}}</div>
-
-	<div>{{> objectivesScenarioList}}</div>
-
-	<div>{{> alternativesScenarioList}}</div>
-</template>
-
-<template name="guestsScenarioList">
-	<h3>Participants</h3>
-	<table class="table table-bordered table-striped">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Email</th>
-			<th>Evaluation Confirmed</th>
-		</tr>
-		</thead>
-		<tbody>
-		{{#each guestsScenarioAdmin}}
-			<tr>
-				<td class="col-md-5">{{username}}</td>
-				<td class="col-md-5">
-					<a href="mailto:{{email}}?subject=SPS%20Participation%20Reminder&amp;
+			<div>
+				<h3>Participants</h3>
+				<table class="table table-bordered table-striped">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Email</th>
+						<th>Evaluation Confirmed</th>
+					</tr>
+					</thead>
+					<tbody>
+					{{#each guestsScenarioAdmin}}
+						<tr>
+							<td class="col-md-5">{{username}}</td>
+							<td class="col-md-5">
+								<a href="mailto:{{email}}?subject=SPS%20Participation%20Reminder&amp;
 						body=Please%20confirm%20your%20evaluation%20in%20order%20to%20proceed%20with%20the%20next%20turn%20of%20the%20scenario"
-					   target="_blank">{{email}}
-					</a>
-				</td>
-				<td class="col-md-2">{{complete_values}}</td>
-			</tr>
-		{{/each}}
-		</tbody>
-	</table>
-</template>
+									 target="_blank">{{email}}
+								</a>
+							</td>
+							<td class="col-md-2">{{complete_values}}</td>
+						</tr>
+					{{/each}}
+					</tbody>
+				</table>
+			</div>
 
-<template name="objectivesScenarioList">
-	<h3>Objectives</h3>
-	<table class="table table-bordered table-striped">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-		</thead>
-		<tbody>
-		{{#each objectivesScenarioAdmin}}
-			<tr>
-				<td class="col-md-5">{{name}}</td>
-				<td class="col-md-7">{{description}}</td>
-			</tr>
-		{{/each}}
-		</tbody>
-	</table>
-</template>
+			<div>
+				<h3>Objectives</h3>
+				<table class="table table-bordered table-striped">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+					</tr>
+					</thead>
+					<tbody>
+					{{#each objectivesScenarioAdmin}}
+						<tr>
+							<td class="col-md-5">{{name}}</td>
+							<td class="col-md-7">{{description}}</td>
+						</tr>
+					{{/each}}
+					</tbody>
+				</table>
+			</div>
 
-<template name="alternativesScenarioList">
-	<h3>Alternatives</h3>
-	<table class="table table-bordered table-striped">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-		</thead>
-		<tbody>
-		{{#each alternativesScenarioAdmin}}
-			<tr>
-				<td class="col-md-5">{{name}}</td>
-				<td class="col-md-7">{{description}}</td>
-			</tr>
-		{{/each}}
-		</tbody>
-	</table>
+			<div>
+				<h3>Alternatives</h3>
+				<table class="table table-bordered table-striped">
+					<thead>
+					<tr>
+						<th>Name</th>
+						<th>Description</th>
+					</tr>
+					</thead>
+					<tbody>
+					{{#each alternativesScenarioAdmin}}
+						<tr>
+							<td class="col-md-5">{{name}}</td>
+							<td class="col-md-7">{{description}}</td>
+						</tr>
+					{{/each}}
+					</tbody>
+				</table>
+			</div>
+		{{else}}
+			{{> spinner}}
+		{{/if}}
+	{{/if}}
 </template>

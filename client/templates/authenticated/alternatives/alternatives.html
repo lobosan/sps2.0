@@ -1,22 +1,28 @@
 <template name="alternatives">
-	{{> defaultTitle currentPage="Alternatives"}}
+	{{#if isInRole 'admin, private, public'}}
+		{{#if Template.subscriptionsReady}}
+			{{> defaultTitle currentPage="Alternatives"}}
 
-	<div class="bottom-buffer">
-		<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAlternative">
-			<i class="fa fa-plus-circle"></i> Add Alternative
-		</button>
+			<div class="bottom-buffer">
+				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAlternative">
+					<i class="fa fa-plus-circle"></i> Add Alternative
+				</button>
 
-		<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
-			Invite Actors <i class="fa fa-angle-double-right"></i>
-		</a>
-		<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'objectives'}}">
-			<i class="fa fa-angle-double-left"></i> Add Objectives
-		</a>
-	</div>
+				<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
+					Invite Actors <i class="fa fa-angle-double-right"></i>
+				</a>
+				<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'objectives'}}">
+					<i class="fa fa-angle-double-left"></i> Add Objectives
+				</a>
+			</div>
 
-	{{>alternativesTable}}
+			{{>alternativesTable}}
 
-	{{>addAlternative}}
+			{{>addAlternative}}
+		{{else}}
+			{{> spinner}}
+		{{/if}}
+	{{/if}}
 </template>
 
 <template name="alternativesTable">

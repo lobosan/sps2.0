@@ -1,22 +1,28 @@
+Template.adminScenario.onCreated(function () {
+  let self = this;
+  self.ready = new ReactiveVar();
+  self.autorun(function () {
+    let handleUsers = Meteor.subscribe('users');
+    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
+    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
+    let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
+    self.ready.set(handleUsers.ready());
+    self.ready.set(handleActiveScenario.ready());
+    self.ready.set(handleObjectives.ready());
+    self.ready.set(handleAlternatives.ready());
+  });
+});
+
 Template.adminScenario.helpers({
   scenarioDetailsAdmin: function () {
     return Scenarios.findOne({_id: Session.get('active_scenario')});
-  }
-});
-
-Template.objectivesScenarioList.helpers({
+  },
   objectivesScenarioAdmin: function () {
     return Objectives.find();
-  }
-});
-
-Template.alternativesScenarioList.helpers({
+  },
   alternativesScenarioAdmin: function () {
     return Alternatives.find();
-  }
-});
-
-Template.guestsScenarioList.helpers({
+  },
   guestsScenarioAdmin: function () {
     var activeScenario = Scenarios.findOne({_id: Session.get('active_scenario')});
     var guests_ids = [];

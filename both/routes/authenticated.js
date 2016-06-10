@@ -11,6 +11,12 @@ const blockUnauthorizedAdmin = (context, redirect) => {
 };
 
 const blockUnauthorizedRole = (context, redirect) => {
+  if (Meteor.userId() && !Roles.userIsInRole(Meteor.userId(), ['admin', 'private', 'public']) || !Session.get('active_scenario')) {
+    Modules.both.redirectUser({redirect: redirect});
+  }
+};
+
+const blockUnauthorizedRoleScenarios = (context, redirect) => {
   if (Meteor.userId() && !Roles.userIsInRole(Meteor.userId(), ['admin', 'private', 'public'])) {
     Modules.both.redirectUser({redirect: redirect});
   }
@@ -23,7 +29,7 @@ const authenticatedRoutes = FlowRouter.group({
 
 authenticatedRoutes.route('/scenarios', {
   name: 'scenarios',
-  triggersEnter: [blockUnauthorizedRole],
+  triggersEnter: [blockUnauthorizedRoleScenarios],
   action() {
     BlazeLayout.render('default', {yield: 'scenarios'});
   }

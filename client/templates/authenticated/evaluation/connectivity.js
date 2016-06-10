@@ -1,9 +1,17 @@
-Template.connectivity.onCreated(() => {
-  Template.instance().subscribe('activeScenario', Session.get('active_scenario'));
-  Template.instance().subscribe('connectivityMatrix', Session.get('active_scenario'));
+Template.connectivity.onCreated(function () {
+  let self = this;
+  self.ready = new ReactiveVar();
+  self.autorun(function () {
+    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
+    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
+    let handleConnectivity = SubsManagerConnectivity.subscribe('connectivityMatrix', Session.get('active_scenario'));
+    self.ready.set(handleActiveScenario.ready());
+    self.ready.set(handleObjectives.ready());
+    self.ready.set(handleConnectivity.ready());
+  });
 });
 
-Template.connectivity.onRendered(function () { // Runs when the DOM is ready
+Template.connectivity.onRendered(function () {
 
   var elem = this.find('.js-switch-obj');
   var init = new Switchery(elem);

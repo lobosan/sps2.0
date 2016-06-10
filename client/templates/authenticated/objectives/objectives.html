@@ -1,19 +1,25 @@
 <template name="objectives">
-	{{> defaultTitle currentPage="Objectives"}}
+	{{#if isInRole 'admin, private, public'}}
+		{{#if Template.subscriptionsReady}}
+			{{> defaultTitle currentPage="Objectives"}}
 
-	<div class="bottom-buffer">
-		<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addObjective">
-			<i class="fa fa-plus-circle"></i> Add Objective
-		</button>
+			<div class="bottom-buffer">
+				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addObjective">
+					<i class="fa fa-plus-circle"></i> Add Objective
+				</button>
 
-		<a class="btn btn-default pull-right" href="{{pathFor 'alternatives'}}">
-			Add Alternatives <i class="fa fa-angle-double-right"></i>
-		</a>
-	</div>
+				<a class="btn btn-default pull-right" href="{{pathFor 'alternatives'}}">
+					Add Alternatives <i class="fa fa-angle-double-right"></i>
+				</a>
+			</div>
 
-	{{>objectivesTable}}
+			{{>objectivesTable}}
 
-	{{>addObjective}}
+			{{>addObjective}}
+		{{else}}
+			{{> spinner}}
+		{{/if}}
+	{{/if}}
 </template>
 
 <template name="objectivesTable">

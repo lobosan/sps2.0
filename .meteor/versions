@@ -67,6 +67,7 @@ meteorhacks:meteorx@1.4.1
 meteorhacks:npm@1.5.0
 meteorhacks:picker@1.0.3
 meteorhacks:ssr@2.2.0
+meteorhacks:subs-manager@1.6.4
 meteortoys:toykit@2.2.1
 minifier-css@1.1.11
 minifier-js@1.1.11

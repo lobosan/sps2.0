@@ -1,5 +1,14 @@
-Meteor.autosubscribe(function () {
-  Meteor.subscribe('probabilityMatrix', Session.get('active_scenario'));
+Template.probability.onCreated(function () {
+  let self = this;
+  self.ready = new ReactiveVar();
+  self.autorun(function () {
+    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
+    let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
+    let handleProbability = SubsManagerProbability.subscribe('probabilityMatrix', Session.get('active_scenario'));
+    self.ready.set(handleActiveScenario.ready());
+    self.ready.set(handleAlternatives.ready());
+    self.ready.set(handleProbability.ready());
+  });
 });
 
 Template.probability.onRendered(function () {
