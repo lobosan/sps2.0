@@ -16,6 +16,7 @@ Meteor.methods({
   },
   acceptInvitation(user) {
     check(user, {
+      userName: String,
       email: String,
       password: Object,
       token: String

@@ -2,7 +2,7 @@ Template.adminScenario.onCreated(function () {
   let self = this;
   self.ready = new ReactiveVar();
   self.autorun(function () {
-    let handleUsers = Meteor.subscribe('users');
+    let handleUsers = self.subscribe('participants');
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
     let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
     let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
