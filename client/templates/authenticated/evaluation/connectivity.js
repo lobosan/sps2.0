@@ -4,7 +4,7 @@ Template.connectivity.onCreated(function () {
   self.autorun(function () {
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
     let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
-    let handleConnectivity = SubsManagerConnectivity.subscribe('connectivityMatrix', Session.get('active_scenario'));
+    let handleConnectivity = SubsManagerConnectivity.subscribe('connectivityMatrixUser', Session.get('active_scenario'));
     self.ready.set(handleActiveScenario.ready());
     self.ready.set(handleObjectives.ready());
     self.ready.set(handleConnectivity.ready());
@@ -12,8 +12,7 @@ Template.connectivity.onCreated(function () {
 });
 
 Template.connectivity.onRendered(function () {
-
-  var elem = this.find('.js-switch-obj');
+  var elem = Template.instance().find('.js-switch-obj');
   var init = new Switchery(elem);
 
   var myData = [];  // Need this to create instance

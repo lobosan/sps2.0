@@ -16,7 +16,7 @@ publicRoutes.route('/', {
   }
 });
 
-publicRoutes.route('/invite/:token', {
+publicRoutes.route('/invite/:authorId/:token', {
   name: 'invite',
   action() {
     BlazeLayout.render('default', {yield: 'invite'});

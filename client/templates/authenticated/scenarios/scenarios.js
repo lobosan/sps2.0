@@ -1,4 +1,11 @@
-Meteor.subscribe('scenarioList');
+Template.scenarios.onCreated(function () {
+  let self = this;
+  self.ready = new ReactiveVar();
+  self.autorun(function () {
+    let handleScenarios = SubsManagerScenarios.subscribe('scenarioList');
+    self.ready.set(handleScenarios.ready());
+  });
+});
 
 isUserJoined = function (rowId) {
   var scenarioRow = Scenarios.findOne({_id: rowId});

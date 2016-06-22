@@ -1,6 +1,10 @@
 Invitations = new Meteor.Collection('invitations');
 
 let InvitationsSchema = new SimpleSchema({
+  authorId: {
+    type: String,
+    label: "Author id."
+  },
   userName: {
     type: String,
     label: "User name."

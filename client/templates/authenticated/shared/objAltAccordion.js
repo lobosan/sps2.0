@@ -1,10 +1,11 @@
 Template.objectivesAccordion.helpers({
   objectivesList: function () {
+    var activeScenario = Scenarios.findOne({_id: Session.get('active_scenario')});
     var turn;
     if (FlowRouter.getRouteName() === 'results') {
       turn = Session.get('turn')
     } else {
-      turn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
+      turn = activeScenario.turn;
     }
     var objectives = Objectives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: turn}}).fetch();
     var objectivesList = [];

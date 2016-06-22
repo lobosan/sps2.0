@@ -4,7 +4,7 @@ Template.probability.onCreated(function () {
   self.autorun(function () {
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
     let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
-    let handleProbability = SubsManagerProbability.subscribe('probabilityMatrix', Session.get('active_scenario'));
+    let handleProbability = SubsManagerProbability.subscribe('probabilityMatrixUser', Session.get('active_scenario'));
     self.ready.set(handleActiveScenario.ready());
     self.ready.set(handleAlternatives.ready());
     self.ready.set(handleProbability.ready());

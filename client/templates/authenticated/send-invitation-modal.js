@@ -6,8 +6,9 @@ Template.sendInvitationModal.events({
     let email = template.find("[name='emailAddress']").value;
     let role = template.find("[name='roles']").value;
 
-    if (email && role !== "") {
+    if (userName && email && role !== "") {
       Meteor.call("sendInvitation", {
+        authorId: Meteor.userId(),
         userName: userName,
         email: email,
         role: role
@@ -21,7 +22,7 @@ Template.sendInvitationModal.events({
         }
       });
     } else {
-      Bert.alert("Please set an email!", "warning");
+      Bert.alert("Please set a username and an email!", "warning");
     }
   }
 });

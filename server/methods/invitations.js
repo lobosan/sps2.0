@@ -1,6 +1,7 @@
 Meteor.methods({
   sendInvitation(invitation) {
     check(invitation, {
+      authorId: String,
       userName: String,
       email: String,
       role: String
@@ -8,6 +9,7 @@ Meteor.methods({
 
     try {
       Modules.server.sendInvitation({
+        authorId: invitation.authorId,
         userName: invitation.userName,
         email: invitation.email,
         token: Random.hexString(16),
