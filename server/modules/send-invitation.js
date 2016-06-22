@@ -10,6 +10,7 @@ let _insertInvitation = (invite) => {
 
 let _prepareEmail = (userName, authorId, token) => {
   let domain = Meteor.settings.private.domain;
+  if (domain === undefined) domain = "spsys.herokuapp.com";
   let url = `http://${ domain }/invite/${ authorId }/${ token }`;
 
   SSR.compileTemplate('invitation', Assets.getText('email/templates/invitation.html'));
