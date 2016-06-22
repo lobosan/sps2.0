@@ -51,10 +51,13 @@ Template.contacts.events({
     }
 
     var scenario = Scenarios.findOne({_id: Session.get('active_scenario')});
+
+    let domain = Meteor.settings.public.domain;
+
     var html = "<h1>Scenario Planning System</h1>"
       + "You've been invited to participate in the scenario: " + scenario.name + "<br><br>"
       + "Description: " + scenario.description + "<br><br>"
-      + "Go to the platform to <a href='http://sps.meteor.com'>participate</a>";
+      + "Go to the platform to <a href='http://"+domain+"'>participate</a>";
 
     if (emails.length >= 1) {
       Meteor.call("sendEmail",
