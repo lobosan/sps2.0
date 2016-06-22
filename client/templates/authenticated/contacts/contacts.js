@@ -1,6 +1,7 @@
 Template.contacts.onCreated(() => {
   Template.instance().subscribe('actorList');
   Template.instance().subscribe('openInvitations');
+  Template.instance().subscribe('contacts', Meteor.userId());
 });
 
 Template.contacts.helpers({
@@ -10,7 +11,14 @@ Template.contacts.helpers({
     _.each(scenarioRow.guests, function (guest) {
       guests_ids.push(guest.userid);
     });
-    var invite_actors = Meteor.users.find({_id: {$nin: guests_ids}});
+
+    var contactsList = Contacts.findOne({authorId: Meteor.userId()}).guests;
+    var contactsGuestsIds = [];
+    _.each(contactsList, function (guest) {
+      contactsGuestsIds.push(guest.userId);
+    });
+
+    var invite_actors = Meteor.users.find({$and: [{_id: {$nin: guests_ids}}, {_id: {$in: contactsGuestsIds}}]});
     if (invite_actors.fetch().length > 0)
       return invite_actors;
     else
