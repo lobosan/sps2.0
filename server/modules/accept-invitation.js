@@ -34,14 +34,25 @@ let _addUserToRole = (user, role) => {
 };
 
 let _addUserToContactsList = (user, authorId) => {
-  console.log('contacts');
-  Contacts.update({authorId: authorId}, {
-    $push: {
-      'guests': {
-        'userId': user
+  let contactsList = Contacts.find({authorId: authorId}).count();
+  if (contactsList === 0) {
+    let directory = Contacts.insert({authorId: authorId});
+    Contacts.update({_id: directory}, {
+      $addToSet: {
+        'guests': {
+          'userId': user
+        }
       }
-    }
-  });
+    });
+  } else {
+    Contacts.update({_id: Contacts.findOne({authorId: authorId})._id}, {
+      $addToSet: {
+        'guests': {
+          'userId': user
+        }
+      }
+    });
+  }
 };
 
 Modules.server.acceptInvitation = accept;

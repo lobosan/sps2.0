@@ -1,5 +1,6 @@
 Template.invite.onCreated(() => {
   Template.instance().subscribe('invite', FlowRouter.current().params.token);
+  Template.instance().subscribe('contacts', FlowRouter.current().params.authorId);
 });
 
 Template.invite.helpers({
