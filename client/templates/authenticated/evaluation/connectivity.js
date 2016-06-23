@@ -1,6 +1,6 @@
 Template.connectivity.onCreated(function () {
   let self = this;
-  self.ready = new ReactiveVar();
+  self.ready = new ReactiveVar(false);
   self.autorun(function () {
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
     let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
@@ -69,7 +69,7 @@ Template.connectivity.onRendered(function () {
     }
   });
 
-  this.autorun(function () {  // Tracker function for reactivity
+  this.autorun(function () {
     var scenarioTurn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
     myData = ConnectivityMatrix.find({scenario_id: Session.get('active_scenario'), turn: scenarioTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch();  // Tie in our data
     hot.loadData(myData);
