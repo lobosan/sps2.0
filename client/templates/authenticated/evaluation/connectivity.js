@@ -1,78 +1,96 @@
 Template.connectivity.onCreated(function () {
   let self = this;
-  self.ready = new ReactiveVar(false);
+  self.isActiveScenarioReady = new ReactiveVar(false);
+  self.isobjectiveListReady = new ReactiveVar(false);
+  self.isconnectivityMatrixUserReady = new ReactiveVar(false);
+
+  self.gridSettings = function (numObj) {
+    var columns = [];
+    var arrayRowsCols = [];
+
+    for (var i = 1; i <= numObj; i++) {
+      columns.push({
+        'data': 'o' + i,
+        'type': 'dropdown',
+        'source': ['0', '1'],
+        'strict': true,
+        'allowInvalid': false
+      });
+      arrayRowsCols.push('Obj' + i);
+    }
+
+    return {
+      data: Handsontable.helper.createSpreadsheetData(numObj, numObj),
+      colHeaders: arrayRowsCols,
+      rowHeaders: arrayRowsCols,
+      height: '450',
+      startRows: numObj,
+      startColumns: numObj,
+      columns: columns,
+      cells: function (r, c, prop) {
+        var cellProperties = {};
+        for (var i = 0; i < numObj; i++) {
+          if (r === i && c === i) {
+            cellProperties.readOnly = true;
+            cellProperties.type = 'text';
+          }
+        }
+        return cellProperties;
+      },
+      afterChange: function (change, source) {  // 'change' is an array of arrays.
+        if (source !== 'loadData') {  // Don't need to run this when data is loaded
+          for (i = 0; i < change.length; i++) {   // For each change, get the change info and update the record
+            var rowNum = change[i][0]; // Which row it appears on Handsontable
+            var row = myData[rowNum];  // Now we have the whole row of data, including _id
+            var key = change[i][1];  // Handsontable docs calls this 'prop'
+            var oldVal = change[i][2];
+            var newVal = change[i][3];
+            var setModifier = {$set: {}};   // Need to build $set object
+            setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
+            ConnectivityMatrix.update(row._id, setModifier);
+          }
+        }
+      }
+    };
+  };
+
   self.autorun(function () {
-    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
-    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
-    let handleConnectivity = SubsManagerConnectivity.subscribe('connectivityMatrixUser', Session.get('active_scenario'));
-    self.ready.set(handleActiveScenario.ready());
-    self.ready.set(handleObjectives.ready());
-    self.ready.set(handleConnectivity.ready());
+    const activeScenario = Session.get('active_scenario');
+    if (!activeScenario) return;
+
+    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
+    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
+    let handleConnectivity = SubsManagerConnectivity.subscribe('connectivityMatrixUser', activeScenario);
+    self.isActiveScenarioReady.set(handleActiveScenario.ready());
+    self.isobjectiveListReady.set(handleObjectives.ready());
+    self.isconnectivityMatrixUserReady.set(handleConnectivity.ready());
+
+    if (handleActiveScenario.ready() && handleObjectives.ready() && handleConnectivity.ready()) {
+      const currentScenario = Scenarios.findOne({_id: activeScenario});
+      const currentTurn = currentScenario.turn;
+      if (activeScenario && currentTurn) {
+        Session.set('scenarioTurn', currentTurn);
+        Session.set('numObj', ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count());
+        Session.set('data', ConnectivityMatrix.find({scenario_id: activeScenario, turn: currentTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch());
+        Session.set('settings', self.gridSettings(Session.get('numObj')));
+      }
+    }
   });
 });
 
 Template.connectivity.onRendered(function () {
-  var elem = Template.instance().find('.js-switch-obj');
+  var elem = this.find('.js-switch-obj');
   var init = new Switchery(elem);
 
-  var myData = [];  // Need this to create instance
-  var container = document.getElementById('connectivity-matrix');
-
-  var scenarioTurn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
-  var numObj = ConnectivityMatrix.find({user_id: Meteor.userId(), turn: scenarioTurn}).count();
-
-  var columns = [];
-  var arrayRowsCols = [];
-
-  for (var i = 1; i <= numObj; i++) {
-    columns.push({
-      'data': 'o' + i,
-      'type': 'dropdown',
-      'source': ['0', '1'],
-      'strict': true,
-      'allowInvalid': false
-    });
-    arrayRowsCols.push('Obj' + i);
-  }
-
-  var hot = new Handsontable(container, { // Create Handsontable instance
-    data: myData,
-    colHeaders: arrayRowsCols,
-    rowHeaders: arrayRowsCols,
-    height: '450',
-    maxRows: numObj,
-    maxCols: numObj,
-    columns: columns,
-    cells: function (r, c, prop) {
-      var cellProperties = {};
-      for (var i = 0; i < numObj; i++) {
-        if (r === i && c === i) {
-          cellProperties.readOnly = true;
-          cellProperties.type = 'text';
-        }
-      }
-      return cellProperties;
-    },
-    afterChange: function (change, source) {  // 'change' is an array of arrays.
-      if (source !== 'loadData') {  // Don't need to run this when data is loaded
-        for (i = 0; i < change.length; i++) {   // For each change, get the change info and update the record
-          var rowNum = change[i][0]; // Which row it appears on Handsontable
-          var row = myData[rowNum];  // Now we have the whole row of data, including _id
-          var key = change[i][1];  // Handsontable docs calls this 'prop'
-          var oldVal = change[i][2];
-          var newVal = change[i][3];
-          var setModifier = {$set: {}};   // Need to build $set object
-          setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
-          ConnectivityMatrix.update(row._id, setModifier);
-        }
-      }
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      var container = document.getElementById('connectivity-matrix');
+      var hot = new Handsontable(container, Session.get('settings'));
+      hot.destroy();
+      hot = new Handsontable(container, Session.get('settings'));
+      myData = Session.get('data');
+      hot.loadData(myData);
     }
-  });
-
-  this.autorun(function () {
-    var scenarioTurn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
-    myData = ConnectivityMatrix.find({scenario_id: Session.get('active_scenario'), turn: scenarioTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch();  // Tie in our data
-    hot.loadData(myData);
   });
 });
 
@@ -82,5 +100,30 @@ Template.connectivity.events({
     Meteor.call('removeAllProbMat');
     Scenarios.update({_id: Session.get('active_scenario')}, {$set: {state: 'Open', turn: 0}});
     FlowRouter.go('adminScenario');
+  },
+  'change .js-switch-obj': function (evt) {
+    var checked = $(evt.target)[0].checked;
+    if (checked) {
+      $('#collapseObjectives').collapse('show');
+    } else {
+      $('#collapseObjectives').collapse('hide');
+    }
+  }
+});
+
+Template.connectivity.helpers({
+  data: function () {
+    let activeScenario = Session.get('active_scenario');
+    let scenarioTurn = Session.get('scenarioTurn');
+    let numObj = Session.get('numObj');
+    let data = Session.get('data');
+    if (activeScenario && scenarioTurn && numObj && data) {
+      return {
+        activeScenario: activeScenario,
+        scenarioTurn: scenarioTurn,
+        numObj: numObj,
+        data: data
+      };
+    }
   }
 });

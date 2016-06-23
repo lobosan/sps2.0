@@ -4,8 +4,8 @@
 			{{> defaultTitle currentPage = "Probability Matrix"}}
 
 			<div class="bottom-buffer">
-				Objectives <span class="switcher-separator">{{> switcheryObj}}</span>
-				Alternatives {{> switcheryAlt}}
+				Objectives <span class="switcher-separator"><input type="checkbox" class="js-switch-obj"/></span>
+				Alternatives <input type="checkbox" class="js-switch-alt"/>
 				<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
 
 				<a class="btn btn-default pull-right" href="{{pathFor 'results'}}">
@@ -25,12 +25,4 @@
 			{{> spinner}}
 		{{/if}}
 	{{/if}}
-</template>
-
-<template name="switcheryObj">
-	<input type="checkbox" class="js-switch-obj"/>
-</template>
-
-<template name="switcheryAlt">
-	<input type="checkbox" class="js-switch-alt"/>
 </template>

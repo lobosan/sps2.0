@@ -1,24 +1,30 @@
 <template name="objectivesAccordion">
-	<div class="collapse" id="collapseObjectives">
-		<table class="table table-bordered table-striped table-hover">
-			<thead>
-			<tr>
-				<th>Objective</th>
-				<th>Name</th>
-				<th>Description</th>
-			</tr>
-			</thead>
-			<tbody>
-			{{#each objectivesList}}
-				<tr class="objectiveRow">
-					<td class="col-md-1">Obj{{index}}</td>
-					<td class="col-md-4">{{name}}</td>
-					<td class="col-md-7">{{description}}</td>
-				</tr>
-			{{/each}}
-			</tbody>
-		</table>
-	</div>
+	{{#if Template.subscriptionsReady}}
+		{{#with objectivesList}}
+			<div class="collapse" id="collapseObjectives">
+				<table class="table table-bordered table-striped table-hover">
+					<thead>
+					<tr>
+						<th>Objective</th>
+						<th>Name</th>
+						<th>Description</th>
+					</tr>
+					</thead>
+					<tbody>
+					{{#each objectivesList}}
+						<tr class="objectiveRow">
+							<td class="col-md-1">Obj{{index}}</td>
+							<td class="col-md-4">{{name}}</td>
+							<td class="col-md-7">{{description}}</td>
+						</tr>
+					{{/each}}
+					</tbody>
+				</table>
+			</div>
+		{{/with}}
+	{{else}}
+		{{> spinner}}
+	{{/if}}
 </template>
 
 <template name="alternativesAccordion">

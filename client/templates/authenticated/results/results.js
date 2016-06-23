@@ -53,5 +53,21 @@ Template.results.events({
   'change #turn': function (evt, tmpl) {
     var turn = $(evt.target).val();
     Session.set('turn', parseInt(turn));
+  },
+  'change .js-switch-obj': function (evt) {
+    var checked = $(evt.target)[0].checked;
+    if (checked) {
+      $('#collapseObjectives').collapse('show');
+    } else {
+      $('#collapseObjectives').collapse('hide');
+    }
+  },
+  'change .js-switch-alt': function (evt) {
+    var checked = $(evt.target)[0].checked;
+    if (checked) {
+      $('#collapseAlternatives').collapse('show');
+    } else {
+      $('#collapseAlternatives').collapse('hide');
+    }
   }
 });
