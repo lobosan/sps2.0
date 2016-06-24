@@ -1,32 +1,12 @@
 Template.probability.onCreated(function () {
   let self = this;
-  self.ready = new ReactiveVar();
-  self.autorun(function () {
-    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', Session.get('active_scenario'));
-    let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
-    let handleProbability = SubsManagerProbability.subscribe('probabilityMatrixUser', Session.get('active_scenario'));
-    self.ready.set(handleActiveScenario.ready());
-    self.ready.set(handleAlternatives.ready());
-    self.ready.set(handleProbability.ready());
-  });
-});
+  self.isActiveScenarioReady = new ReactiveVar(false);
+  self.isObjectiveListReady = new ReactiveVar(false);
+  self.isAlternativeListReady = new ReactiveVar(false);
+  self.isConnectivityMatrixUserReady = new ReactiveVar(false);
+  self.isProbabilityMatrixUserReady = new ReactiveVar(false);
 
-Template.probability.onRendered(function () {
-  if (Session.get('active_scenario')) {
-
-    var elemObj = this.find('.js-switch-obj');
-    var initObj = new Switchery(elemObj);
-
-    var elemAlt = this.find('.js-switch-alt');
-    var initAlt = new Switchery(elemAlt);
-
-    var myData = [];  // Need this to create instance
-    var container = document.getElementById('probability-matrix');
-
-    var scenarioTurn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
-    var numAlt = ProbabilityMatrix.find({user_id: Meteor.userId(), turn: scenarioTurn}).count();
-    var numObj = ConnectivityMatrix.find({user_id: Meteor.userId(), turn: scenarioTurn}).count();
-
+  self.gridSettings = function (numObj, numAlt) {
     var columns = [];
     var colHeaders = [];
     var rowHeaders = [];
@@ -40,12 +20,12 @@ Template.probability.onRendered(function () {
       colHeaders.push('Obj' + i + ' %');
     }
 
-    for (var i = 1; i <= numAlt; i++) {
-      rowHeaders.push('Alt' + i);
+    for (var j = 1; j <= numAlt; j++) {
+      rowHeaders.push('Alt' + j);
     }
 
-    var hot = new Handsontable(container, { // Create Handsontable instance
-      data: myData,
+    return {
+      data: Handsontable.helper.createSpreadsheetData(numAlt, numObj),
       colHeaders: colHeaders,
       rowHeaders: rowHeaders,
       height: '450',
@@ -66,17 +46,55 @@ Template.probability.onRendered(function () {
           }
         }
       }
-    });
+    };
+  };
 
-    this.autorun(function () {  // Tracker function for reactivity
-      var scenarioTurn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
-      myData = ProbabilityMatrix.find({scenario_id: Session.get('active_scenario'), turn: scenarioTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch();  // Tie in our data
-      //myData = ProbabilityMatrix.find({user_id: Meteor.userId(), turn: scenarioTurn}, {sort: {order: 1}}).fetch();  // Tie in our data
+  self.autorun(function () {
+    const activeScenario = Session.get('active_scenario');
+    if (!activeScenario) return;
+
+    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
+    let handleObjectiveList = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
+    let handleAlternativeList = SubsManagerAlternatives.subscribe('alternativeList', activeScenario);
+    let handleConnectivityMatrixUser = SubsManagerConnectivity.subscribe('connectivityMatrixUser', activeScenario);
+    let handleProbabilityMatrixUser = SubsManagerProbability.subscribe('probabilityMatrixUser', activeScenario);
+    self.isActiveScenarioReady.set(handleActiveScenario.ready());
+    self.isObjectiveListReady.set(handleObjectiveList.ready());
+    self.isAlternativeListReady.set(handleAlternativeList.ready());
+    self.isConnectivityMatrixUserReady.set(handleConnectivityMatrixUser.ready());
+    self.isProbabilityMatrixUserReady.set(handleProbabilityMatrixUser.ready());
+
+    if (handleActiveScenario.ready() && handleObjectiveList.ready() && handleAlternativeList.ready() && handleConnectivityMatrixUser.ready() && handleProbabilityMatrixUser.ready()) {
+      const currentScenario = Scenarios.findOne({_id: activeScenario});
+      const currentTurn = currentScenario.turn;
+      if (activeScenario && currentTurn) {
+        Session.set('scenarioTurn', currentTurn);
+        Session.set('numObj', ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count());
+        Session.set('numAlt', ProbabilityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count());
+        Session.set('data', ProbabilityMatrix.find({scenario_id: activeScenario, turn: currentTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch());
+        Session.set('settings', self.gridSettings(Session.get('numObj'), Session.get('numAlt')));
+      }
+    }
+  });
+});
+
+Template.probability.onRendered(function () {
+  var elemObj = this.find('.js-switch-obj');
+  var initObj = new Switchery(elemObj);
+
+  var elemAlt = this.find('.js-switch-alt');
+  var initAlt = new Switchery(elemAlt);
+
+  this.autorun(() => {
+    if (this.subscriptionsReady()) {
+      var container = document.getElementById('probability-matrix');
+      var hot = new Handsontable(container, Session.get('settings'));
+      hot.destroy();
+      hot = new Handsontable(container, Session.get('settings'));
+      myData = Session.get('data');
       hot.loadData(myData);
-    });
-  } else {
-    return;
-  }
+    }
+  });
 });
 
 Template.probability.events({
@@ -100,6 +118,25 @@ Template.probability.events({
       $('#collapseAlternatives').collapse('show');
     } else {
       $('#collapseAlternatives').collapse('hide');
+    }
+  }
+});
+
+Template.probability.helpers({
+  data: function () {
+    let activeScenario = Session.get('active_scenario');
+    let scenarioTurn = Session.get('scenarioTurn');
+    let numObj = Session.get('numObj');
+    let numAlt = Session.get('numAlt');
+    let data = Session.get('data');
+    if (activeScenario && scenarioTurn && numObj && numAlt && data) {
+      return {
+        activeScenario: activeScenario,
+        scenarioTurn: scenarioTurn,
+        numObj: numObj,
+        numAlt: numAlt,
+        data: data
+      };
     }
   }
 });

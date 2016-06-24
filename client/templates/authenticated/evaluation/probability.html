@@ -1,6 +1,7 @@
 <template name="probability">
 	{{#if isInRole 'admin, private, public'}}
 		{{#if Template.subscriptionsReady}}
+			{{#with data}}
 			{{> defaultTitle currentPage = "Probability Matrix"}}
 
 			<div class="bottom-buffer">
@@ -19,8 +20,8 @@
 
 			{{> objectivesAccordion}}
 			{{> alternativesAccordion}}
-
-			<div class="handsontable top-buffer" id="probability-matrix"></div>
+				<div class="handsontable top-buffer" id="probability-matrix"></div>
+			{{/with}}
 		{{else}}
 			{{> spinner}}
 		{{/if}}

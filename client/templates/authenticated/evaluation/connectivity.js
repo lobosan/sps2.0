@@ -1,8 +1,8 @@
 Template.connectivity.onCreated(function () {
   let self = this;
   self.isActiveScenarioReady = new ReactiveVar(false);
-  self.isobjectiveListReady = new ReactiveVar(false);
-  self.isconnectivityMatrixUserReady = new ReactiveVar(false);
+  self.isObjectiveListReady = new ReactiveVar(false);
+  self.isConnectivityMatrixUserReady = new ReactiveVar(false);
 
   self.gridSettings = function (numObj) {
     var columns = [];
@@ -59,13 +59,13 @@ Template.connectivity.onCreated(function () {
     if (!activeScenario) return;
 
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
-    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
-    let handleConnectivity = SubsManagerConnectivity.subscribe('connectivityMatrixUser', activeScenario);
+    let handleObjectiveList = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
+    let handleConnectivityMatrixUser = SubsManagerConnectivity.subscribe('connectivityMatrixUser', activeScenario);
     self.isActiveScenarioReady.set(handleActiveScenario.ready());
-    self.isobjectiveListReady.set(handleObjectives.ready());
-    self.isconnectivityMatrixUserReady.set(handleConnectivity.ready());
+    self.isObjectiveListReady.set(handleObjectiveList.ready());
+    self.isConnectivityMatrixUserReady.set(handleConnectivityMatrixUser.ready());
 
-    if (handleActiveScenario.ready() && handleObjectives.ready() && handleConnectivity.ready()) {
+    if (handleActiveScenario.ready() && handleObjectiveList.ready() && handleConnectivityMatrixUser.ready()) {
       const currentScenario = Scenarios.findOne({_id: activeScenario});
       const currentTurn = currentScenario.turn;
       if (activeScenario && currentTurn) {

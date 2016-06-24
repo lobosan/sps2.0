@@ -1,46 +1,49 @@
 Template.objectivesAccordion.onCreated(function () {
   let self = this;
-  self.ready = new ReactiveVar();
+  self.isActiveScenarioReady = new ReactiveVar();
+  self.isObjectiveListReady = new ReactiveVar();
   self.autorun(function () {
     const activeScenario = Session.get('active_scenario');
     if (!activeScenario) return;
 
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
-    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
-    self.ready.set(handleActiveScenario.ready());
-    self.ready.set(handleObjectives.ready());
+    let handleObjectiveList = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
+    self.isActiveScenarioReady.set(handleActiveScenario.ready());
+    self.isObjectiveListReady.set(handleObjectiveList.ready());
   });
 });
 
 Template.alternativesAccordion.onCreated(function () {
   let self = this;
-  self.ready = new ReactiveVar();
+  self.isActiveScenarioReady = new ReactiveVar();
+  self.isAlternativeListReady = new ReactiveVar();
   self.autorun(function () {
     const activeScenario = Session.get('active_scenario');
     if (!activeScenario) return;
 
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
-    let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', activeScenario);
-    self.ready.set(handleActiveScenario.ready());
-    self.ready.set(handleAlternatives.ready());
+    let handleAlternativeList = SubsManagerAlternatives.subscribe('alternativeList', activeScenario);
+    self.isActiveScenarioReady.set(handleActiveScenario.ready());
+    self.isAlternativeListReady.set(handleAlternativeList.ready());
   });
 });
 
 Template.objectivesAccordion.helpers({
   objectivesList: function () {
-    if (Session.get('active_scenario')) {
-      var activeScenario = Scenarios.findOne({_id: Session.get('active_scenario')});
+    let activeScenario = Session.get('active_scenario');
+    if (activeScenario) {
+      var currentScenario = Scenarios.findOne({_id: activeScenario});
       var turn;
       if (FlowRouter.getRouteName() === 'results') {
         turn = Session.get('turn')
       } else {
-        if (activeScenario) {
-          turn = activeScenario.turn;
+        if (currentScenario) {
+          turn = currentScenario.turn;
         } else {
           return;
         }
       }
-      var objectives = Objectives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: turn}}).fetch();
+      var objectives = Objectives.find({scenario_id: activeScenario, turn: {$lte: turn}}).fetch();
       var objectivesList = [];
       var objectivesNames = [];
       var index = 1;
@@ -51,22 +54,26 @@ Template.objectivesAccordion.helpers({
       });
       Session.set('objNamesGlobal', objectivesNames);
       return objectivesList;
-    } else {
-      return;
     }
   }
 });
 
 Template.alternativesAccordion.helpers({
   alternativesList: function () {
-    if (Session.get('active_scenario')) {
+    let activeScenario = Session.get('active_scenario');
+    if (activeScenario) {
+      var currentScenario = Scenarios.findOne({_id: activeScenario});
       var turn;
       if (FlowRouter.getRouteName() === 'results') {
         turn = Session.get('turn');
       } else {
-        turn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
+        if (currentScenario) {
+          turn = currentScenario.turn;
+        } else {
+          return;
+        }
       }
-      var alternatives = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: turn}}).fetch();
+      var alternatives = Alternatives.find({scenario_id: activeScenario, turn: {$lte: turn}}).fetch();
       var alternativesList = [];
       var alternativesNames = [];
       var index = 1;
@@ -77,8 +84,6 @@ Template.alternativesAccordion.helpers({
       });
       Session.set('altNamesGlobal', alternativesNames);
       return alternativesList;
-    } else {
-      return;
     }
   }
 });
