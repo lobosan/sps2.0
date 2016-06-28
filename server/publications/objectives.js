@@ -1,4 +1,6 @@
 Meteor.publish("objectiveList", function (active_scenario) {
   check(active_scenario, String);
-  return Objectives.find({scenario_id: active_scenario});
+  const objectiveList = Objectives.find({scenario_id: active_scenario});
+  if (objectiveList) return objectiveList;
+  else return this.ready();
 });

@@ -1,10 +1,9 @@
 Template.connectivity.onCreated(function () {
-  let self = this;
-  self.isActiveScenarioReady = new ReactiveVar(false);
-  self.isObjectiveListReady = new ReactiveVar(false);
-  self.isConnectivityMatrixUserReady = new ReactiveVar(false);
+  this.isActiveScenarioReady = new ReactiveVar(false);
+  this.isObjectiveListReady = new ReactiveVar(false);
+  this.isConnectivityMatrixUserReady = new ReactiveVar(false);
 
-  self.gridSettings = function (numObj) {
+  this.gridSettings = function (numObj) {
     var columns = [];
     var arrayRowsCols = [];
 
@@ -54,16 +53,16 @@ Template.connectivity.onCreated(function () {
     };
   };
 
-  self.autorun(function () {
+  this.autorun(() => {
     const activeScenario = Session.get('active_scenario');
     if (!activeScenario) return;
 
     let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
     let handleObjectiveList = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
     let handleConnectivityMatrixUser = SubsManagerConnectivity.subscribe('connectivityMatrixUser', activeScenario);
-    self.isActiveScenarioReady.set(handleActiveScenario.ready());
-    self.isObjectiveListReady.set(handleObjectiveList.ready());
-    self.isConnectivityMatrixUserReady.set(handleConnectivityMatrixUser.ready());
+    this.isActiveScenarioReady.set(handleActiveScenario.ready());
+    this.isObjectiveListReady.set(handleObjectiveList.ready());
+    this.isConnectivityMatrixUserReady.set(handleConnectivityMatrixUser.ready());
 
     if (handleActiveScenario.ready() && handleObjectiveList.ready() && handleConnectivityMatrixUser.ready()) {
       const currentScenario = Scenarios.findOne({_id: activeScenario});
@@ -72,7 +71,7 @@ Template.connectivity.onCreated(function () {
         Session.set('scenarioTurn', currentTurn);
         Session.set('numObj', ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count());
         Session.set('data', ConnectivityMatrix.find({scenario_id: activeScenario, turn: currentTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch());
-        Session.set('settings', self.gridSettings(Session.get('numObj')));
+        Session.set('settings', this.gridSettings(Session.get('numObj')));
       }
     }
   });

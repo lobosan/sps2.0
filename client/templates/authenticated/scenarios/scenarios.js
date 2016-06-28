@@ -1,9 +1,8 @@
 Template.scenarios.onCreated(function () {
-  let self = this;
-  self.ready = new ReactiveVar();
-  self.autorun(function () {
+  this.ready = new ReactiveVar();
+  this.autorun(() => {
     let handleScenarios = SubsManagerScenarios.subscribe('scenarioList');
-    self.ready.set(handleScenarios.ready());
+    this.ready.set(handleScenarios.ready());
   });
 });
 

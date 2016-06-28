@@ -1,9 +1,8 @@
 Template.alternativesTable.onCreated(function () {
-  let self = this;
-  self.ready = new ReactiveVar();
-  self.autorun(function () {
+  this.ready = new ReactiveVar();
+  this.autorun(() => {
     let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
-    self.ready.set(handleAlternatives.ready());
+    this.ready.set(handleAlternatives.ready());
   });
 });
 

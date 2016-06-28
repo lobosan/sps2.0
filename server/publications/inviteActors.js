@@ -1,3 +1,5 @@
 Meteor.publish("actorList", function () {
-  return Meteor.users.find({}, {fields: {"profile.name": 1, "emails.address": 1}});
+  const actorList = Meteor.users.find({}, {fields: {"profile.name": 1, "emails.address": 1}});
+  if (actorList) return actorList;
+  else return this.ready();
 });

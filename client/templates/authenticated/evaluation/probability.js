@@ -1,12 +1,11 @@
 Template.probability.onCreated(function () {
-  let self = this;
-  self.isActiveScenarioReady = new ReactiveVar(false);
-  self.isObjectiveListReady = new ReactiveVar(false);
-  self.isAlternativeListReady = new ReactiveVar(false);
-  self.isConnectivityMatrixUserReady = new ReactiveVar(false);
-  self.isProbabilityMatrixUserReady = new ReactiveVar(false);
+  this.isActiveScenarioReady = new ReactiveVar(false);
+  this.isObjectiveListReady = new ReactiveVar(false);
+  this.isAlternativeListReady = new ReactiveVar(false);
+  this.isConnectivityMatrixUserReady = new ReactiveVar(false);
+  this.isProbabilityMatrixUserReady = new ReactiveVar(false);
 
-  self.gridSettings = function (numObj, numAlt) {
+  this.gridSettings = function (numObj, numAlt) {
     var columns = [];
     var colHeaders = [];
     var rowHeaders = [];
@@ -49,7 +48,7 @@ Template.probability.onCreated(function () {
     };
   };
 
-  self.autorun(function () {
+  this.autorun(() => {
     const activeScenario = Session.get('active_scenario');
     if (!activeScenario) return;
 
@@ -58,11 +57,11 @@ Template.probability.onCreated(function () {
     let handleAlternativeList = SubsManagerAlternatives.subscribe('alternativeList', activeScenario);
     let handleConnectivityMatrixUser = SubsManagerConnectivity.subscribe('connectivityMatrixUser', activeScenario);
     let handleProbabilityMatrixUser = SubsManagerProbability.subscribe('probabilityMatrixUser', activeScenario);
-    self.isActiveScenarioReady.set(handleActiveScenario.ready());
-    self.isObjectiveListReady.set(handleObjectiveList.ready());
-    self.isAlternativeListReady.set(handleAlternativeList.ready());
-    self.isConnectivityMatrixUserReady.set(handleConnectivityMatrixUser.ready());
-    self.isProbabilityMatrixUserReady.set(handleProbabilityMatrixUser.ready());
+    this.isActiveScenarioReady.set(handleActiveScenario.ready());
+    this.isObjectiveListReady.set(handleObjectiveList.ready());
+    this.isAlternativeListReady.set(handleAlternativeList.ready());
+    this.isConnectivityMatrixUserReady.set(handleConnectivityMatrixUser.ready());
+    this.isProbabilityMatrixUserReady.set(handleProbabilityMatrixUser.ready());
 
     if (handleActiveScenario.ready() && handleObjectiveList.ready() && handleAlternativeList.ready() && handleConnectivityMatrixUser.ready() && handleProbabilityMatrixUser.ready()) {
       const currentScenario = Scenarios.findOne({_id: activeScenario});
@@ -72,7 +71,7 @@ Template.probability.onCreated(function () {
         Session.set('numObj', ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count());
         Session.set('numAlt', ProbabilityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count());
         Session.set('data', ProbabilityMatrix.find({scenario_id: activeScenario, turn: currentTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch());
-        Session.set('settings', self.gridSettings(Session.get('numObj'), Session.get('numAlt')));
+        Session.set('settings', this.gridSettings(Session.get('numObj'), Session.get('numAlt')));
       }
     }
   });

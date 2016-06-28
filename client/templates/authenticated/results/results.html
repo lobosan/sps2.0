@@ -32,10 +32,40 @@
 			<div id="probability-user" class="top-buffer-medium"></div>
 
 			<div id="influence-dependence-global" class="top-buffer-medium"></div>
-			{{> objCoordGlobal}}
+			<table class="table table-bordered table-striped table-hover">
+				<thead>
+				<tr>
+					<th>Objective Name</th>
+					<th>Coordinates</th>
+				</tr>
+				</thead>
+				<tbody>
+				{{#each objCoord}}
+					<tr class="objectiveRow">
+						<td class="col-md-5">{{objName}}</td>
+						<td class="col-md-7">{{coordinates}}</td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
 
 			<div id="probability-global" class="top-buffer-medium"></div>
-			{{> probCoordGlobal}}
+			<table class="table table-bordered table-striped table-hover">
+				<thead>
+				<tr>
+					<th>Alternative Name</th>
+					<th>Probability</th>
+				</tr>
+				</thead>
+				<tbody>
+				{{#each probCoord}}
+					<tr class="objectiveRow">
+						<td class="col-md-5">{{altName}}</td>
+						<td class="col-md-7">{{probability}} %</td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
 		{{else}}
 			{{> spinner}}
 		{{/if}}

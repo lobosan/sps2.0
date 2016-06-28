@@ -11,5 +11,7 @@ Meteor.publish('users', function () {
 });
 
 Meteor.publish('participants', function () {
-  return Meteor.users.find({}, {fields: {"profile.name": 1, "emails.address": 1}});
+  const participants = Meteor.users.find({}, {fields: {"profile.name": 1, "emails.address": 1}});
+  if (participants) return participants;
+  else return this.ready();
 });

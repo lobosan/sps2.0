@@ -1,9 +1,8 @@
 Template.objectivesTable.onCreated(function () {
-  let self = this;
-  self.ready = new ReactiveVar();
-  self.autorun(function () {
+  this.ready = new ReactiveVar();
+  this.autorun(() => {
     let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
-    self.ready.set(handleObjectives.ready());
+    this.ready.set(handleObjectives.ready());
   });
 });
 
