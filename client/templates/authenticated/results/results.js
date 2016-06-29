@@ -20,6 +20,18 @@ Template.results.onCreated(function () {
     this.isAlternativeListReady.set(handleAlternativeList.ready());
     this.isConnectivityMatrixReady.set(handleConnectivityMatrix.ready());
     this.isProbabilityMatrixReady.set(handleProbabilityMatrix.ready());
+
+    if (handleActiveScenario.ready() && handleObjectiveList.ready() && handleAlternativeList.ready() && handleConnectivityMatrix.ready() && handleProbabilityMatrix.ready()) {
+      const currentScenario = Scenarios.findOne({_id: activeScenario});
+      const connectivityMatrixScenarioTurn = ConnectivityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
+      const probabilityMatrixScenarioTurn = ProbabilityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
+
+      if (activeScenario && currentScenario && connectivityMatrixScenarioTurn && probabilityMatrixScenarioTurn) {
+        Session.set('currentScenario', currentScenario);
+        Session.set('connectivityMatrixScenarioTurn', connectivityMatrixScenarioTurn);
+        Session.set('probabilityMatrixScenarioTurn', probabilityMatrixScenarioTurn);
+      }
+    }
   });
 });
 
@@ -32,9 +44,12 @@ Template.results.onRendered(function () {
 
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      if (this.$('#turn').val() == '')
-        Session.set('turn', Scenarios.findOne({_id: Session.get('active_scenario')}).turn);
-      var results = calculations();
+      if (!Session.get('currentScenario') && !Session.get('connectivityMatrixScenarioTurn') && !Session.get('probabilityMatrixScenarioTurn')) return;
+      if (this.$('#turn').val() == '') {
+        var currentScenario = Session.get('currentScenario');
+        Session.set('turn', currentScenario.turn);
+      }
+      var results = calculations(Session.get('currentScenario'), Session.get('connectivityMatrixScenarioTurn'), Session.get('probabilityMatrixScenarioTurn'));
       buildInfluenceDependenceUser(results.infDepCurrentUser);
       buildProbabilityUser(results.probabilityCurrentUser);
       buildInfluenceDependenceGlobal(results.infDepGlobal);
@@ -74,40 +89,34 @@ Template.results.events({
 Template.results.helpers({
   turns: function () {
     var activeScenario = Session.get('active_scenario');
-    if (activeScenario) {
-      var currentScenario = Scenarios.findOne({_id: activeScenario});
-      if (currentScenario) {
-        var turn = currentScenario.turn;
-        var turns = [];
-        for (var i = 1; i <= turn; i++) {
-          turns.push({turn: i});
-        }
-        return turns;
-      } else {
-        return;
-      }
+    if (!activeScenario) return;
+    var currentScenario = Scenarios.findOne({_id: activeScenario});
+    if (!currentScenario) return;
+    var turn = currentScenario.turn;
+    var turns = [];
+    for (var i = 1; i <= turn; i++) {
+      turns.push({turn: i});
     }
+    return turns;
   },
   objCoord: function () {
     var infDepGlobal = Session.get('infDepGlobal');
     var objNamesGlobal = Session.get('objNamesGlobal');
-    if (infDepGlobal && objNamesGlobal) {
-      var objCoord = [];
-      _.each(infDepGlobal, function (coordinates, key) {
-        objCoord.push({'objName': objNamesGlobal[key].objName, 'coordinates': coordinates.toString().replace(',', ', ')});
-      });
-      return objCoord;
-    }
+    if (infDepGlobal.length === 0 || objNamesGlobal.length === 0) return;
+    var objCoord = [];
+    _.each(infDepGlobal, function (coordinates, key) {
+      objCoord.push({'objName': objNamesGlobal[key].objName, 'coordinates': coordinates.toString().replace(',', ', ')});
+    });
+    return objCoord;
   },
   probCoord: function () {
     var probGlobal = Session.get('probGlobal');
     var altNamesGlobal = Session.get('altNamesGlobal');
-    if (probGlobal && altNamesGlobal) {
-      var probCoord = [];
-      _.each(probGlobal, function (coordinates, key) {
-        probCoord.push({'altName': altNamesGlobal[key].altName, 'probability': coordinates.toString().replace(',', ', ')});
-      });
-      return probCoord;
-    }
+    if (probGlobal.length === 0 || altNamesGlobal.length === 0) return;
+    var probCoord = [];
+    _.each(probGlobal, function (coordinates, key) {
+      probCoord.push({'altName': altNamesGlobal[key].altName, 'probability': coordinates.toString().replace(',', ', ')});
+    });
+    return probCoord;
   }
 });

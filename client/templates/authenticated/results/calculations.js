@@ -1,5 +1,10 @@
-chartsDataUser = function (userId) {
-  var conMatrixCurrentUser = ConnectivityMatrix.find({scenario_id: Session.get('active_scenario'), turn: Session.get('turn'), user_id: userId}, {sort: {created_at: 1}}).fetch();
+chartsDataUser = function (userId, connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn) {
+  var conMatrixCurrentUser = [];
+  _.find(connectivityMatrixScenarioTurn, function (item) {
+    if (item.user_id === userId)
+      conMatrixCurrentUser.push(item);
+  });
+
   // Influence
   var influence = [];
   for (var i = 0; i < conMatrixCurrentUser.length; i++) {
@@ -61,7 +66,12 @@ chartsDataUser = function (userId) {
   //console.log('vector3: ' + vector3);
 
   // Evi
-  var probMatrixCurrentUser = ProbabilityMatrix.find({scenario_id: Session.get('active_scenario'), turn: Session.get('turn'), user_id: userId}, {sort: {created_at: 1}}).fetch();
+  var probMatrixCurrentUser = [];
+  _.find(probabilityMatrixScenarioTurn, function (item) {
+    if (item.user_id === userId)
+      probMatrixCurrentUser.push(item);
+  });
+
   var evi = [];
   for (var p = 0; p < probMatrixCurrentUser.length; p++) {
     var tempEvi = 0;
@@ -88,22 +98,20 @@ chartsDataUser = function (userId) {
   }
 };
 
-calculations = function () {
-  // Participant IDs
-  var activeScenario = Scenarios.findOne({_id: Session.get('active_scenario')});
-  var authorId = activeScenario.author;
-  var guests = activeScenario.guests;
+calculations = function (currentScenario, connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn) {
+  var authorId = currentScenario.author;
+  var guests = currentScenario.guests;
   var participantIds = [authorId];
   _.each(guests, function (guest) {
     participantIds.push(guest.userid);
   });
   var otherParticipants = _.without(participantIds, Meteor.userId());
 
-  var chartsCurrentUser = chartsDataUser(Meteor.userId());
+  var chartsCurrentUser = chartsDataUser(Meteor.userId(), connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn);
 
   var infDepParticipants = [chartsCurrentUser.infDepCurrentUser];
   _.each(otherParticipants, function (participantId) {
-    infDepParticipants.push(chartsDataUser(participantId).infDepCurrentUser);
+    infDepParticipants.push(chartsDataUser(participantId, connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn).infDepCurrentUser);
   });
   //console.log(infDepParticipants);
 
@@ -125,7 +133,7 @@ calculations = function () {
   // Probabilidad Global
   var probabilityParticipants = [chartsCurrentUser.probabilityCurrentUser];
   _.each(otherParticipants, function (participantId) {
-    probabilityParticipants.push(chartsDataUser(participantId).probabilityCurrentUser);
+    probabilityParticipants.push(chartsDataUser(participantId, connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn).probabilityCurrentUser);
   });
 
   var probabilityGlobal = [];
