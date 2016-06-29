@@ -112,3 +112,20 @@ Template.connectivity.events({
     }
   }
 });
+
+Template.connectivity.helpers({
+  data: function () {
+    let activeScenario = Session.get('active_scenario');
+    let scenarioTurn = Session.get('scenarioTurn');
+    let numObj = Session.get('numObj');
+    let data = Session.get('data');
+    if (activeScenario && scenarioTurn && numObj && data) {
+      return {
+        activeScenario: activeScenario,
+        scenarioTurn: scenarioTurn,
+        numObj: numObj,
+        data: data
+      };
+    }
+  }
+});
