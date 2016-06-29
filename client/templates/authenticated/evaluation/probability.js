@@ -10,10 +10,17 @@ Template.probability.onCreated(function () {
     var colHeaders = [];
     var rowHeaders = [];
 
+    var validator = [];
+    for (var i = 0; i <= 100; i++) {
+      validator.push(i);
+    }
+
     for (var i = 1; i <= numObj; i++) {
       columns.push({
         'data': 'p' + i,
-        'validator': /^[0-9][0-9]?$|^100$/,
+        'type': 'dropdown',
+        'source': validator,
+        'strict': true,
         'allowInvalid': false
       });
       colHeaders.push('Obj' + i + ' %');
@@ -29,22 +36,10 @@ Template.probability.onCreated(function () {
       rowHeaders: rowHeaders,
       height: '450',
       maxRows: numAlt,
+      startRows: numAlt,
       maxCols: numObj,
-      columns: columns,
-      afterChange: function (change, source) {  // "change" is an array of arrays.
-        if (source !== 'loadData') {  // Don't need to run this when data is loaded
-          for (i = 0; i < change.length; i++) {   // For each change, get the change info and update the record
-            var rowNum = change[i][0]; // Which row it appears on Handsontable
-            var row = myData[rowNum];  // Now we have the whole row of data, including _id
-            var key = change[i][1];  // Handsontable docs calls this "prop"
-            var oldVal = change[i][2];
-            var newVal = change[i][3];
-            var setModifier = {$set: {}};   // Need to build $set object
-            setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
-            ProbabilityMatrix.update(row._id, setModifier);
-          }
-        }
-      }
+      startCols: numObj,
+      columns: columns
     };
   };
 
@@ -90,8 +85,22 @@ Template.probability.onRendered(function () {
       var hot = new Handsontable(container, Session.get('settings'));
       hot.destroy();
       hot = new Handsontable(container, Session.get('settings'));
-      myData = Session.get('data');
-      hot.loadData(myData);
+      hot.loadData(Session.get('data'));
+      hot.addHook('afterChange', function (change, source) {  // "change" is an array of arrays.
+        var myData = Session.get('data');
+        if (source !== 'loadData') {  // Don't need to run this when data is loaded
+          for (i = 0; i < change.length; i++) {   // For each change, get the change info and update the record
+            var rowNum = change[i][0]; // Which row it appears on Handsontable
+            var row = myData[rowNum];  // Now we have the whole row of data, including _id
+            var key = change[i][1];  // Handsontable docs calls this "prop"
+            var oldVal = change[i][2];
+            var newVal = change[i][3];
+            var setModifier = {$set: {}};   // Need to build $set object
+            setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
+            ProbabilityMatrix.update(row._id, setModifier);
+          }
+        }
+      });
     }
   });
 });
@@ -117,25 +126,6 @@ Template.probability.events({
       $('#collapseAlternatives').collapse('show');
     } else {
       $('#collapseAlternatives').collapse('hide');
-    }
-  }
-});
-
-Template.probability.helpers({
-  data: function () {
-    let activeScenario = Session.get('active_scenario');
-    let scenarioTurn = Session.get('scenarioTurn');
-    let numObj = Session.get('numObj');
-    let numAlt = Session.get('numAlt');
-    let data = Session.get('data');
-    if (activeScenario && scenarioTurn && numObj && numAlt && data) {
-      return {
-        activeScenario: activeScenario,
-        scenarioTurn: scenarioTurn,
-        numObj: numObj,
-        numAlt: numAlt,
-        data: data
-      };
     }
   }
 });

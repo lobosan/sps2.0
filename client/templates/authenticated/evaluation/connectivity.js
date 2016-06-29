@@ -23,33 +23,9 @@ Template.connectivity.onCreated(function () {
       colHeaders: arrayRowsCols,
       rowHeaders: arrayRowsCols,
       height: '450',
-      startRows: numObj,
-      startColumns: numObj,
-      columns: columns,
-      cells: function (r, c, prop) {
-        var cellProperties = {};
-        for (var i = 0; i < numObj; i++) {
-          if (r === i && c === i) {
-            cellProperties.readOnly = true;
-            cellProperties.type = 'text';
-          }
-        }
-        return cellProperties;
-      },
-      afterChange: function (change, source) {  // 'change' is an array of arrays.
-        if (source !== 'loadData') {  // Don't need to run this when data is loaded
-          for (i = 0; i < change.length; i++) {   // For each change, get the change info and update the record
-            var rowNum = change[i][0]; // Which row it appears on Handsontable
-            var row = myData[rowNum];  // Now we have the whole row of data, including _id
-            var key = change[i][1];  // Handsontable docs calls this 'prop'
-            var oldVal = change[i][2];
-            var newVal = change[i][3];
-            var setModifier = {$set: {}};   // Need to build $set object
-            setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
-            ConnectivityMatrix.update(row._id, setModifier);
-          }
-        }
-      }
+      maxRows: numObj,
+      maxColumns: numObj,
+      columns: columns
     };
   };
 
@@ -87,8 +63,35 @@ Template.connectivity.onRendered(function () {
       var hot = new Handsontable(container, Session.get('settings'));
       hot.destroy();
       hot = new Handsontable(container, Session.get('settings'));
-      myData = Session.get('data');
-      hot.loadData(myData);
+      hot.updateSettings({
+        cells: function (r, c, prop) {
+          var numObj = Session.get('numObj');
+          var cellProperties = {};
+          for (var i = 0; i < numObj; i++) {
+            if (r === i && c === i) {
+              cellProperties.readOnly = true;
+              cellProperties.type = 'text';
+            }
+          }
+          return cellProperties;
+        }
+      });
+      hot.loadData(Session.get('data'));
+      hot.addHook('afterChange', function (change, source) {  // 'change' is an array of arrays.
+        var myData = Session.get('data');
+        if (source !== 'loadData') {  // Don't need to run this when data is loaded
+          for (i = 0; i < change.length; i++) {   // For each change, get the change info and update the record
+            var rowNum = change[i][0]; // Which row it appears on Handsontable
+            var row = myData[rowNum];  // Now we have the whole row of data, including _id
+            var key = change[i][1];  // Handsontable docs calls this 'prop'
+            var oldVal = change[i][2];
+            var newVal = change[i][3];
+            var setModifier = {$set: {}};   // Need to build $set object
+            setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
+            ConnectivityMatrix.update(row._id, setModifier);
+          }
+        }
+      });
     }
   });
 });
@@ -106,23 +109,6 @@ Template.connectivity.events({
       $('#collapseObjectives').collapse('show');
     } else {
       $('#collapseObjectives').collapse('hide');
-    }
-  }
-});
-
-Template.connectivity.helpers({
-  data: function () {
-    let activeScenario = Session.get('active_scenario');
-    let scenarioTurn = Session.get('scenarioTurn');
-    let numObj = Session.get('numObj');
-    let data = Session.get('data');
-    if (activeScenario && scenarioTurn && numObj && data) {
-      return {
-        activeScenario: activeScenario,
-        scenarioTurn: scenarioTurn,
-        numObj: numObj,
-        data: data
-      };
     }
   }
 });
