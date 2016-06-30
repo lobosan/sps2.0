@@ -56,3 +56,4 @@ let _addUserToContactsList = (user, authorId) => {
 };
 
 Modules.server.acceptInvitation = accept;
+Modules.server.addUserToContactsList = _addUserToContactsList;

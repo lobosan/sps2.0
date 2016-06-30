@@ -1,6 +1,10 @@
-Template.invite.onCreated(() => {
-  Template.instance().subscribe('invite', FlowRouter.current().params.token);
-  Template.instance().subscribe('contacts', FlowRouter.current().params.authorId);
+Template.invite.onCreated(function () {
+  this.isInviteReady = new ReactiveVar(false);
+
+  this.autorun(() => {
+    let handleInvite = SubsManagerInvitations.subscribe('invite', FlowRouter.current().params.token);
+    this.isInviteReady.set(handleInvite.ready());
+  });
 });
 
 Template.invite.helpers({

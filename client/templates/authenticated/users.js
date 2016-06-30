@@ -1,5 +1,10 @@
-Template.users.onCreated(() => {
-  Template.instance().subscribe('users');
+Template.users.onCreated(function () {
+  this.isUsersReady = new ReactiveVar(false);
+
+  this.autorun(() => {
+    let handleUsers = SubsManagerUsers.subscribe('users');
+    this.isUsersReady.set(handleUsers.ready());
+  });
 });
 
 Template.users.helpers({

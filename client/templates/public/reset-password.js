@@ -1,4 +1,4 @@
-Template.resetPassword.onRendered( () => {
+Template.resetPassword.onRendered(function () {
   Modules.client.resetPassword({
     form: "#reset-password",
     template: Template.instance()
@@ -6,5 +6,5 @@ Template.resetPassword.onRendered( () => {
 });
 
 Template.resetPassword.events({
-  'submit form': ( event ) => event.preventDefault()
+  'submit form': (event) => event.preventDefault()
 });

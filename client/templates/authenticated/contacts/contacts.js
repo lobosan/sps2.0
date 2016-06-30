@@ -1,20 +1,40 @@
-Template.contacts.onCreated(() => {
-  Template.instance().subscribe('actorList');
-  Template.instance().subscribe('openInvitations');
-  Template.instance().subscribe('contacts', Meteor.userId());
+Template.contacts.onCreated(function () {
+  this.isActiveScenarioReady = new ReactiveVar(false);
+  this.isActorListReady = new ReactiveVar(false);
+  this.isOpenInvitationsReady = new ReactiveVar(false);
+  this.isContactsReady = new ReactiveVar(false);
+
+  this.autorun(() => {
+    const activeScenario = Session.get('active_scenario');
+    if (!activeScenario) return;
+
+    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
+    let handleActorList = SubsManagerUsers.subscribe('actorList');
+    let handleOpenInvitations = SubsManagerInvitations.subscribe('openInvitations');
+    let handleContacts = SubsManagerContacts.subscribe('contacts', Meteor.userId());
+    this.isActiveScenarioReady.set(handleActiveScenario.ready());
+    this.isActorListReady.set(handleActorList.ready());
+    this.isOpenInvitationsReady.set(handleOpenInvitations.ready());
+    this.isContactsReady.set(handleContacts.ready());
+  });
 });
 
 Template.contacts.helpers({
   actorList: function () {
-    var scenarioRow = Scenarios.findOne({_id: Session.get('active_scenario')});
+    var activeScenario = Session.get('active_scenario');
+    var scenarioRow = Scenarios.findOne({_id: activeScenario});
+    if (!scenarioRow) return;
     var guests_ids = [scenarioRow.author];
     _.each(scenarioRow.guests, function (guest) {
       guests_ids.push(guest.userid);
     });
 
-    var contactsList = Contacts.findOne({authorId: Meteor.userId()}).guests;
+    var contactsList = Contacts.findOne({authorId: Meteor.userId()});
+    if (!contactsList) return;
+    var guestsList = contactsList.guests;
+
     var contactsGuestsIds = [];
-    _.each(contactsList, function (guest) {
+    _.each(guestsList, function (guest) {
       contactsGuestsIds.push(guest.userId);
     });
 
@@ -25,11 +45,11 @@ Template.contacts.helpers({
       return false;
   },
   hasInvitations: function () {
-    var invitations = Invitations.find().count();
+    var invitations = Invitations.find({authorId: Meteor.userId()}).count();
     return invitations < 1 ? false : true;
   },
   invitations: function () {
-    var invitations = Invitations.find();
+    var invitations = Invitations.find({authorId: Meteor.userId()});
 
     if (invitations) {
       return invitations;
@@ -57,7 +77,7 @@ Template.contacts.events({
     var html = "<h1>Scenario Planning System</h1>"
       + "You've been invited to participate in the scenario: " + scenario.name + "<br><br>"
       + "Description: " + scenario.description + "<br><br>"
-      + "Go to the platform to <a href='http://"+domain+"'>participate</a>";
+      + "Go to the platform to <a href='http://" + domain + "'>participate</a>";
 
     if (emails.length >= 1) {
       Meteor.call("sendEmail",

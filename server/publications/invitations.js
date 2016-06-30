@@ -6,7 +6,7 @@ Meteor.publish('invite', function (token) {
 });
 
 Meteor.publish('openInvitations', function () {
-  const openInvitations = Invitations.find({}, {fields: {"email": 1, "role": 1, "date": 1}});
+  const openInvitations = Invitations.find({}, {fields: {"email": 1, "role": 1, "date": 1, "authorId": 1}});
   if (openInvitations) return openInvitations;
   else return this.ready();
 });

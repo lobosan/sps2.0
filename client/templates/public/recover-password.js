@@ -1,4 +1,4 @@
-Template.recoverPassword.onRendered( () => {
+Template.recoverPassword.onRendered(function () {
   Modules.client.recoverPassword({
     form: "#recover-password",
     template: Template.instance()
@@ -6,5 +6,5 @@ Template.recoverPassword.onRendered( () => {
 });
 
 Template.recoverPassword.events({
-  'submit form': ( event ) => event.preventDefault()
+  'submit form': (event) => event.preventDefault()
 });

@@ -1,7 +1,22 @@
 let invitation = (options) => {
-  _insertInvitation(options);
-  var email = _prepareEmail(options.userName, options.authorId, options.token);
-  _sendInvitation(options.email, email);
+  var currentUsers = Meteor.users.find({}, {fields: {emails: 1}}).fetch();
+  var contact;
+  _.find(currentUsers, function (item) {
+    if (item.emails[0].address === options.email) {
+      contact = Meteor.users.findOne({'emails.address': options.email});
+    }
+  });
+  if (contact) {
+    try {
+      Modules.server.addUserToContactsList(contact._id, options.authorId);
+    } catch (exception) {
+      return exception;
+    }
+  } else {
+    _insertInvitation(options);
+    var email = _prepareEmail(options.userName, options.authorId, options.token);
+    _sendInvitation(options.email, email);
+  }
 };
 
 let _insertInvitation = (invite) => {
@@ -19,9 +34,14 @@ let _prepareEmail = (userName, authorId, token) => {
 };
 
 let _sendInvitation = (email, content) => {
+  this.unblock();
+
+  if (!Meteor.user())
+    throw new Meteor.Error(403, "not logged in");
+
   Email.send({
     to: email,
-    from: "Scenario Planning System <sp.galindoh@gmail.com>",
+    from: Meteor.user().emails[0].address,
     subject: "Invitation to SPS",
     html: content
   });
