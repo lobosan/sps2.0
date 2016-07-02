@@ -1,21 +1,19 @@
 let invitation = (options) => {
-  var currentUsers = Meteor.users.find({}, {fields: {emails: 1}}).fetch();
-  var contact;
-  _.find(currentUsers, function (item) {
-    if (item.emails[0].address === options.email) {
-      contact = Meteor.users.findOne({'emails.address': options.email});
-    }
-  });
-  if (contact) {
+  var user = Meteor.users.findOne({'emails.address': options.email});
+  if (user) {
     try {
-      Modules.server.addUserToContactsList(contact._id, options.authorId);
+      Modules.server.addUserToContactsList(user._id, options.authorId);
     } catch (exception) {
       return exception;
     }
   } else {
-    _insertInvitation(options);
-    var email = _prepareEmail(options.userName, options.authorId, options.token);
-    _sendInvitation(options.email, email);
+    var invitation = Invitations.findOne({email: options.email});
+    var email;
+    if (!invitation) {
+      _insertInvitation(options);
+      email = _prepareEmail(options.userName, options.authorId, options.token);
+      _sendInvitation(options.email, email);
+    }
   }
 };
 
@@ -34,15 +32,10 @@ let _prepareEmail = (userName, authorId, token) => {
 };
 
 let _sendInvitation = (email, content) => {
-  this.unblock();
-
-  if (!Meteor.user())
-    throw new Meteor.Error(403, "not logged in");
-
   Email.send({
     to: email,
-    from: Meteor.user().emails[0].address,
-    subject: "Invitation to SPS",
+    from: "Scenario Planning System <"+Meteor.user().emails[0].address+">",
+    subject: "Invitation to participate in SPS",
     html: content
   });
 };

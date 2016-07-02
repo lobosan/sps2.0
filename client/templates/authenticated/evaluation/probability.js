@@ -81,6 +81,7 @@ Template.probability.onRendered(function () {
 
   this.autorun(() => {
     if (this.subscriptionsReady()) {
+      if (!Session.get('data') || !Session.get('settings')) return;
       var container = document.getElementById('probability-matrix');
       var hot = new Handsontable(container, Session.get('settings'));
       hot.destroy();
@@ -97,7 +98,7 @@ Template.probability.onRendered(function () {
             var newVal = change[i][3];
             var setModifier = {$set: {}};   // Need to build $set object
             setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
-            ProbabilityMatrix.update(row._id, setModifier);
+            Meteor.call('updateProbabilityCell', row._id, setModifier);
           }
         }
       });
