@@ -26,7 +26,7 @@ Meteor.methods({
     var html = "<h1>Scenario Planning System</h1>"
       + "The scenario <b>" + scenario_name + "</b> has started a new turn<br><br>"
       + "Description: " + scenario_description + "<br><br>"
-      + "Go to the platform to select the scenario described above and continue your <a href='http://"+domain+"'>evaluation</a>";
+      + "Go to the platform to select the scenario described above and continue your <a href='"+domain+"'>evaluation</a>";
 
     if (emails.length >= 1) {
       this.unblock();

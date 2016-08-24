@@ -77,7 +77,7 @@ Template.contacts.events({
     var html = "<h1>Scenario Planning System</h1>"
       + "You've been invited to participate in the scenario: " + scenario.name + "<br><br>"
       + "Description: " + scenario.description + "<br><br>"
-      + "Go to the platform to <a href='http://" + domain + "'>participate</a>";
+      + "Go to the platform to <a href='" + domain + "'>participate</a>";
 
     if (emails.length >= 1) {
       Meteor.call("sendEmail",
