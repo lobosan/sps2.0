@@ -6,5 +6,8 @@
     "local": "meteor --settings settings-development.json",
     "test": "meteor deploy sps2.meteor.com --settings settings-production.json --debug",
     "prod": "meteor deploy sps2.meteor.com --settings settings-production.json"
+  },
+  "dependencies": {
+    "bcrypt": "^0.8.7"
   }
 }

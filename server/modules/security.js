@@ -10,20 +10,20 @@ let security = () => {
   // Only if an admin user is logged in
   Security.permit(['insert', 'update', 'remove']).collections([
     Scenarios, Objectives, Alternatives, ConnectivityMatrix, ProbabilityMatrix, Invitations, Contacts, Meteor.users
-  ]).ifHasRole('admin').apply();
+  ]).ifHasRole('admin').allowInClientCode();
 
   // Only if a user is logged in
   Security.permit(['insert', 'update']).collections([
     Scenarios, Objectives, Alternatives, ConnectivityMatrix, ProbabilityMatrix, Invitations, Contacts
-  ]).ifLoggedIn().apply();
+  ]).ifLoggedIn().allowInClientCode();
 
   // Only if a user is logged in and is the owner of the document
   Security.permit(['update', 'remove']).collections([
     Scenarios, Objectives, Alternatives, ConnectivityMatrix, ProbabilityMatrix, Invitations, Contacts
-  ]).ifLoggedIn().ifIsOwner().apply();
+  ]).ifLoggedIn().ifIsOwner().allowInClientCode();
 
   // Only if a user doesn't try to change the roles property and is the owner of the document
-  Meteor.users.permit('update').ifLoggedIn().ifIsOwner().exceptProps(['roles']).apply();
+  Meteor.users.permit('update').ifLoggedIn().ifIsOwner().exceptProps(['roles']).allowInClientCode();
 };
 
 Modules.server.security = security;
