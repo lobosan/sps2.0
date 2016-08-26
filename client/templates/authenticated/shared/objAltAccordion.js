@@ -21,6 +21,7 @@ Template.objectivesAccordion.helpers({
 
     var currentScenario = Scenarios.findOne({_id: activeScenario});
     var turn;
+
     if (FlowRouter.getRouteName() === 'results') {
       turn = Session.get('turn')
     } else {
@@ -30,6 +31,7 @@ Template.objectivesAccordion.helpers({
         return;
       }
     }
+
     var objectives = Objectives.find({scenario_id: activeScenario, turn: {$lte: turn}}).fetch();
     var objectivesList = [];
     var objectivesNames = [];
@@ -61,6 +63,7 @@ Template.alternativesAccordion.helpers({
         return;
       }
     }
+
     var alternatives = Alternatives.find({scenario_id: activeScenario, turn: {$lte: turn}}).fetch();
     var alternativesList = [];
     var alternativesNames = [];

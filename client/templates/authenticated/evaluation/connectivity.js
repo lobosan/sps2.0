@@ -15,6 +15,7 @@ Template.connectivityMatrix.onRendered(function () {
       const currentScenario = Scenarios.findOne({_id: activeScenario});
       const currentTurn = currentScenario.turn;
       //Session.set('scenarioTurn', currentTurn);
+
       var numObj = ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count();
 
       var columns = [];

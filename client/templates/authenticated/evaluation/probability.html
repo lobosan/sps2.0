@@ -1,25 +1,28 @@
 <template name="probability">
 	{{#if isInRole 'admin, private, public'}}
-		{{#if Template.subscriptionsReady}}
-			{{#with data}}
-				{{> defaultTitle currentPage = "Probability Matrix"}}
-				<div class="bottom-buffer">
-					Objectives <span class="switcher-separator"><input type="checkbox" class="js-switch-obj"/></span>
-					Alternatives <input type="checkbox" class="js-switch-alt"/>
-					<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
-					<a class="btn btn-default pull-right" href="{{pathFor 'results'}}">
-						Results <i class="fa fa-angle-double-right"></i>
-					</a>
-					<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'connectivity'}}">
-						<i class="fa fa-angle-double-left"></i> Connectivity Matrix
-					</a>
-				</div>
-				{{> objectivesAccordion}}
-				{{> alternativesAccordion}}
-				<div class="handsontable top-buffer" id="probability-matrix"></div>
-			{{/with}}
-		{{else}}
-			{{> spinner}}
-		{{/if}}
+		{{> defaultTitle currentPage = "Probability Matrix"}}
+		<div class="bottom-buffer">
+			Objectives <span class="switcher-separator"><input type="checkbox" class="js-switch-obj"/></span>
+			Alternatives <input type="checkbox" class="js-switch-alt"/>
+			<!--<button id="remove-cm" type="button" class="btn btn-primary">Remove all</button>-->
+			<a class="btn btn-default pull-right" href="{{pathFor 'results'}}">
+				Results <i class="fa fa-angle-double-right"></i>
+			</a>
+			<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'connectivity'}}">
+				<i class="fa fa-angle-double-left"></i> Connectivity Matrix
+			</a>
+		</div>
+		{{> objectivesAccordion}}
+		{{> alternativesAccordion}}
+
+		<div class="handsontable top-buffer" id="probability-matrix"></div>
+		{{> probabilityMatrix}}
+	{{/if}}
+</template>
+
+<template name="probabilityMatrix">
+	{{#if Template.subscriptionsReady}}
+	{{else}}
+		{{> spinner}}
 	{{/if}}
 </template>
