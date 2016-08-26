@@ -1,12 +1,12 @@
-Template.alternativesTable.onCreated(function () {
-  this.ready = new ReactiveVar();
+Template.alternatives.onCreated(function () {
+  this.activeScenario = () => Session.get('active_scenario');
+
   this.autorun(() => {
-    let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', Session.get('active_scenario'));
-    this.ready.set(handleAlternatives.ready());
+    this.subscribe('alternativeList', this.activeScenario());
   });
 });
 
-Template.alternativesTable.helpers({
+Template.alternatives.helpers({
   alternativeList: function () {
     return Alternatives.find();
   }
@@ -14,8 +14,15 @@ Template.alternativesTable.helpers({
 
 Template.insertAlternativeForm.helpers({
   defaultValues: function () {
-    var turn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
+    var activeScenario = Session.get('active_scenario');
+    if (!activeScenario) return;
+
+    var currentScenario = Scenarios.findOne({_id: activeScenario});
+    var turn = currentScenario.turn;
     turn++;
-    return {scenario_id: Session.get('active_scenario'), turn: turn};
+    return {
+      scenario_id: activeScenario,
+      turn: turn
+    };
   }
 });

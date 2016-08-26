@@ -1,1 +1,0 @@
-SubsManagerUsers = new SubsManager();

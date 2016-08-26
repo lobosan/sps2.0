@@ -16,32 +16,28 @@
 				</a>
 			</div>
 
-			{{>alternativesTable}}
+			<table class="table table-bordered table-striped table-hover top-buffer">
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th>Description</th>
+				</tr>
+				</thead>
+				<tbody>
+				{{#each alternativeList}}
+					<tr class="objectiveRow">
+						<td>{{name}}</td>
+						<td>{{description}}</td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
 
 			{{>addAlternative}}
 		{{else}}
 			{{> spinner}}
 		{{/if}}
 	{{/if}}
-</template>
-
-<template name="alternativesTable">
-	<table class="table table-bordered table-striped table-hover top-buffer">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-		</thead>
-		<tbody>
-		{{#each alternativeList}}
-			<tr class="objectiveRow">
-				<td>{{name}}</td>
-				<td>{{description}}</td>
-			</tr>
-		{{/each}}
-		</tbody>
-	</table>
 </template>
 
 <template name="addAlternative">

@@ -2,7 +2,7 @@ Template.invite.onCreated(function () {
   this.isInviteReady = new ReactiveVar(false);
 
   this.autorun(() => {
-    let handleInvite = SubsManagerInvitations.subscribe('invite', FlowRouter.current().params.token);
+    let handleInvite = Meteor.subscribe('invite', FlowRouter.current().params.token);
     this.isInviteReady.set(handleInvite.ready());
   });
 });

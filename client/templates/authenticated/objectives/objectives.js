@@ -1,12 +1,12 @@
-Template.objectivesTable.onCreated(function () {
-  this.ready = new ReactiveVar();
+Template.objectives.onCreated(function () {
+  this.activeScenario = () => Session.get('active_scenario');
+
   this.autorun(() => {
-    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', Session.get('active_scenario'));
-    this.ready.set(handleObjectives.ready());
+    this.subscribe('objectiveList', this.activeScenario());
   });
 });
 
-Template.objectivesTable.helpers({
+Template.objectives.helpers({
   objectiveList: function () {
     return Objectives.find();
   }
@@ -14,8 +14,15 @@ Template.objectivesTable.helpers({
 
 Template.insertObjectiveForm.helpers({
   defaultValues: function () {
-    var turn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
+    var activeScenario = Session.get('active_scenario');
+    if (!activeScenario) return;
+
+    var currentScenario = Scenarios.findOne({_id: activeScenario});
+    var turn = currentScenario.turn;
     turn++;
-    return {scenario_id: Session.get('active_scenario'), turn: turn};
+    return {
+      scenario_id: activeScenario,
+      turn: turn
+    };
   }
 });

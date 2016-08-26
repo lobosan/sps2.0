@@ -1,21 +1,10 @@
 Template.contacts.onCreated(function () {
-  this.isActiveScenarioReady = new ReactiveVar(false);
-  this.isActorListReady = new ReactiveVar(false);
-  this.isOpenInvitationsReady = new ReactiveVar(false);
-  this.isContactsReady = new ReactiveVar(false);
+  this.userId = () => Meteor.userId();
 
   this.autorun(() => {
-    const activeScenario = Session.get('active_scenario');
-    if (!activeScenario) return;
-
-    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
-    let handleActorList = SubsManagerUsers.subscribe('actorList');
-    let handleOpenInvitations = SubsManagerInvitations.subscribe('openInvitations');
-    let handleContacts = SubsManagerContacts.subscribe('contacts', Meteor.userId());
-    this.isActiveScenarioReady.set(handleActiveScenario.ready());
-    this.isActorListReady.set(handleActorList.ready());
-    this.isOpenInvitationsReady.set(handleOpenInvitations.ready());
-    this.isContactsReady.set(handleContacts.ready());
+    this.subscribe('participants');
+    this.subscribe('openInvitations');
+    this.subscribe('contacts', this.userId());
   });
 });
 
@@ -77,7 +66,7 @@ Template.contacts.events({
     var html = "<h1>Scenario Planning System</h1>"
       + "You've been invited to participate in the scenario: " + scenario.name + "<br><br>"
       + "Description: " + scenario.description + "<br><br>"
-      + "Go to the platform to <a href='" + domain + "'>participate</a>";
+      + "Go to the platform to <a href='" + domain + "/scenarios'>participate</a>";
 
     if (emails.length >= 1) {
       Meteor.call("sendEmail",

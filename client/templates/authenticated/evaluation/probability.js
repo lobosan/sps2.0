@@ -47,11 +47,11 @@ Template.probability.onCreated(function () {
     const activeScenario = Session.get('active_scenario');
     if (!activeScenario) return;
 
-    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
-    let handleObjectiveList = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
-    let handleAlternativeList = SubsManagerAlternatives.subscribe('alternativeList', activeScenario);
-    let handleConnectivityMatrixUser = SubsManagerConnectivity.subscribe('connectivityMatrixUser', activeScenario);
-    let handleProbabilityMatrixUser = SubsManagerProbability.subscribe('probabilityMatrixUser', activeScenario);
+    let handleActiveScenario = Meteor.subscribe('activeScenario', activeScenario);
+    let handleObjectiveList = Meteor.subscribe('objectiveList', activeScenario);
+    let handleAlternativeList = Meteor.subscribe('alternativeList', activeScenario);
+    let handleConnectivityMatrixUser = Meteor.subscribe('connectivityMatrixUser', activeScenario);
+    let handleProbabilityMatrixUser = Meteor.subscribe('probabilityMatrixUser', activeScenario);
     this.isActiveScenarioReady.set(handleActiveScenario.ready());
     this.isObjectiveListReady.set(handleObjectiveList.ready());
     this.isAlternativeListReady.set(handleAlternativeList.ready());

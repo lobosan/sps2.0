@@ -9,11 +9,11 @@ Template.results.onCreated(function () {
     const activeScenario = Session.get('active_scenario');
     if (!activeScenario) return;
 
-    const handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
-    const handleObjectiveList = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
-    const handleAlternativeList = SubsManagerAlternatives.subscribe('alternativeList', activeScenario);
-    const handleConnectivityMatrix = SubsManagerConnectivity.subscribe('connectivityMatrix', activeScenario);
-    const handleProbabilityMatrix = SubsManagerProbability.subscribe('probabilityMatrix', activeScenario);
+    const handleActiveScenario = Meteor.subscribe('activeScenario', activeScenario);
+    const handleObjectiveList = Meteor.subscribe('objectiveList', activeScenario);
+    const handleAlternativeList = Meteor.subscribe('alternativeList', activeScenario);
+    const handleConnectivityMatrix = Meteor.subscribe('connectivityMatrix', activeScenario);
+    const handleProbabilityMatrix = Meteor.subscribe('probabilityMatrix', activeScenario);
 
     this.isActiveScenarioReady.set(handleActiveScenario.ready());
     this.isObjectiveListReady.set(handleObjectiveList.ready());
@@ -102,21 +102,25 @@ Template.results.helpers({
   objCoord: function () {
     var infDepGlobal = Session.get('infDepGlobal');
     var objNamesGlobal = Session.get('objNamesGlobal');
-    if (infDepGlobal.length === 0 || objNamesGlobal.length === 0) return;
-    var objCoord = [];
-    _.each(infDepGlobal, function (coordinates, key) {
-      objCoord.push({'objName': objNamesGlobal[key].objName, 'coordinates': coordinates.toString().replace(',', ', ')});
-    });
-    return objCoord;
+    if (infDepGlobal && objNamesGlobal) {
+      if (infDepGlobal.length === 0 || objNamesGlobal.length === 0) return;
+      var objCoord = [];
+      _.each(infDepGlobal, function (coordinates, key) {
+        objCoord.push({'objName': objNamesGlobal[key].objName, 'coordinates': coordinates.toString().replace(',', ', ')});
+      });
+      return objCoord;
+    }
   },
   probCoord: function () {
     var probGlobal = Session.get('probGlobal');
     var altNamesGlobal = Session.get('altNamesGlobal');
-    if (probGlobal.length === 0 || altNamesGlobal.length === 0) return;
-    var probCoord = [];
-    _.each(probGlobal, function (coordinates, key) {
-      probCoord.push({'altName': altNamesGlobal[key].altName, 'probability': coordinates.toString().replace(',', ', ')});
-    });
-    return probCoord;
+    if (probGlobal && altNamesGlobal) {
+      if (probGlobal.length === 0 || altNamesGlobal.length === 0) return;
+      var probCoord = [];
+      _.each(probGlobal, function (coordinates, key) {
+        probCoord.push({'altName': altNamesGlobal[key].altName, 'probability': coordinates.toString().replace(',', ', ')});
+      });
+      return probCoord;
+    }
   }
 });

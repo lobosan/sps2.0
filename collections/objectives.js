@@ -1,5 +1,4 @@
 Objectives = new Mongo.Collection("objectives");
-SubsManagerObjectives = new SubsManager();
 
 Objectives.attachSchema(new SimpleSchema({
   scenario_id: {

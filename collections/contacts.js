@@ -1,5 +1,4 @@
 Contacts = new Mongo.Collection("contacts");
-SubsManagerContacts = new SubsManager();
 
 Contacts.attachSchema(new SimpleSchema({
   authorId: {

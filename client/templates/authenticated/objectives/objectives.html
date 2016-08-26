@@ -13,32 +13,28 @@
 				</a>
 			</div>
 
-			{{>objectivesTable}}
+			<table class="table table-bordered table-striped table-hover top-buffer">
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th>Description</th>
+				</tr>
+				</thead>
+				<tbody>
+				{{#each objectiveList}}
+					<tr class="objectiveRow">
+						<td>{{name}}</td>
+						<td>{{description}}</td>
+					</tr>
+				{{/each}}
+				</tbody>
+			</table>
 
 			{{>addObjective}}
 		{{else}}
 			{{> spinner}}
 		{{/if}}
 	{{/if}}
-</template>
-
-<template name="objectivesTable">
-	<table class="table table-bordered table-striped table-hover top-buffer">
-		<thead>
-		<tr>
-			<th>Name</th>
-			<th>Description</th>
-		</tr>
-		</thead>
-		<tbody>
-		{{#each objectiveList}}
-			<tr class="objectiveRow">
-				<td>{{name}}</td>
-				<td>{{description}}</td>
-			</tr>
-		{{/each}}
-		</tbody>
-	</table>
 </template>
 
 <template name="addObjective">

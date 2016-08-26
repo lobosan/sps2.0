@@ -2,7 +2,7 @@ Template.users.onCreated(function () {
   this.isUsersReady = new ReactiveVar(false);
 
   this.autorun(() => {
-    let handleUsers = SubsManagerUsers.subscribe('users');
+    let handleUsers = Meteor.subscribe('users');
     this.isUsersReady.set(handleUsers.ready());
   });
 });

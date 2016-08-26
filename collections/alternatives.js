@@ -1,5 +1,4 @@
 Alternatives = new Mongo.Collection("alternatives");
-SubsManagerAlternatives = new SubsManager();
 
 Alternatives.attachSchema(new SimpleSchema({
   scenario_id: {

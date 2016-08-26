@@ -1,24 +1,24 @@
 Template.scenarios.onCreated(function () {
-  this.ready = new ReactiveVar();
   this.autorun(() => {
-    let handleScenarios = SubsManagerScenarios.subscribe('scenarioList');
-    this.ready.set(handleScenarios.ready());
+    this.subscribe('scenarioList');
   });
 });
 
 isUserJoined = function (rowId) {
   var scenarioRow = Scenarios.findOne({_id: rowId});
-  var guests_ids = [];
-  _.each(scenarioRow.guests, function (guest) {
-    guests_ids.push(guest.userid);
-  });
+  if (scenarioRow) {
+    var guests_ids = [];
+    _.each(scenarioRow.guests, function (guest) {
+      guests_ids.push(guest.userid);
+    });
 
-  if (Meteor.userId() === scenarioRow.author) {
-    return true;
-  } else if (_.contains(guests_ids, Meteor.userId())) {
-    return true;
-  } else {
-    return false;
+    if (Meteor.userId() === scenarioRow.author) {
+      return true;
+    } else if (_.contains(guests_ids, Meteor.userId())) {
+      return true;
+    } else {
+      return false;
+    }
   }
 };
 
@@ -28,15 +28,19 @@ Template.joinScenario.helpers({
   },
   isAuthor: function () {
     var scenarioRow = Scenarios.findOne({_id: this._id});
-    if (Meteor.userId() === scenarioRow.author) return true;
+    if (scenarioRow) {
+      if (Meteor.userId() === scenarioRow.author) return true;
+    }
   },
   isGuest: function () {
     var scenarioRow = Scenarios.findOne({_id: this._id});
-    var guests_ids = [];
-    _.each(scenarioRow.guests, function (guest) {
-      guests_ids.push(guest.userid);
-    });
-    if (_.contains(guests_ids, Meteor.userId())) return true;
+    if (scenarioRow) {
+      var guests_ids = [];
+      _.each(scenarioRow.guests, function (guest) {
+        guests_ids.push(guest.userid);
+      });
+      if (_.contains(guests_ids, Meteor.userId())) return true;
+    }
   }
 });
 

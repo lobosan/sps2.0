@@ -1,21 +1,10 @@
 Template.adminScenario.onCreated(function () {
-  this.isUsersReady = new ReactiveVar(false);
-  this.isActiveScenarioReady = new ReactiveVar(false);
-  this.isObjectiveListReady = new ReactiveVar(false);
-  this.isAlternativeListReady = new ReactiveVar(false);
+  this.activeScenario = () => Session.get('active_scenario');
 
   this.autorun(() => {
-    const activeScenario = Session.get('active_scenario');
-    if (!activeScenario) return;
-
-    let handleUsers = SubsManagerUsers.subscribe('participants');
-    let handleActiveScenario = SubsManagerScenarios.subscribe('activeScenario', activeScenario);
-    let handleObjectives = SubsManagerObjectives.subscribe('objectiveList', activeScenario);
-    let handleAlternatives = SubsManagerAlternatives.subscribe('alternativeList', activeScenario);
-    this.isUsersReady.set(handleUsers.ready());
-    this.isActiveScenarioReady.set(handleActiveScenario.ready());
-    this.isObjectiveListReady.set(handleObjectives.ready());
-    this.isAlternativeListReady.set(handleAlternatives.ready());
+    this.subscribe('participants');
+    this.subscribe('objectiveList', this.activeScenario());
+    this.subscribe('alternativeList', this.activeScenario());
   });
 });
 

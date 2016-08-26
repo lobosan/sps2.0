@@ -42,7 +42,6 @@ chrismbeckett:toastr
 kevohagan:sweetalert
 standard-minifier-css@1.2.0
 standard-minifier-js@1.2.0
-meteorhacks:subs-manager
 flowkey:numeric
 awsp:handsontable
 shell-server@0.2.1
