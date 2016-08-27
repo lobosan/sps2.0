@@ -7,16 +7,15 @@ Template.connectivityMatrix.onCreated(function () {
 });
 
 Template.connectivityMatrix.onRendered(function () {
-  this.autorun(() => {
+  this.autorun((computation) => {
     if (this.subscriptionsReady()) {
       const activeScenario = Session.get('active_scenario');
       if (!activeScenario) return;
 
       const currentScenario = Scenarios.findOne({_id: activeScenario});
       const currentTurn = currentScenario.turn;
+      const numObj = ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count();
       //Session.set('scenarioTurn', currentTurn);
-
-      var numObj = ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count();
 
       var columns = [];
       var arrayRowsCols = [];
@@ -72,6 +71,7 @@ Template.connectivityMatrix.onRendered(function () {
 
       myData = ConnectivityMatrix.find({scenario_id: activeScenario, turn: currentTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch();  // Tie in our data
       hot.loadData(myData);
+      computation.stop();
     }
   });
 });
@@ -90,7 +90,7 @@ Template.connectivity.events({
       template.$('#collapseObjectives').collapse('hide');
     }
   }/*,
-  'click #remove-cm': function () {
+   'click #remove-cm': function () {
    Meteor.call('removeAllConMat');
    Meteor.call('removeAllProbMat');
    Scenarios.update({_id: Session.get('active_scenario')}, {$set: {state: 'Open', turn: 0}});

@@ -8,17 +8,16 @@ Template.probabilityMatrix.onCreated(function () {
 });
 
 Template.probabilityMatrix.onRendered(function () {
-  this.autorun(() => {
+  this.autorun((computation) => {
     if (this.subscriptionsReady()) {
       const activeScenario = Session.get('active_scenario');
       if (!activeScenario) return;
 
       const currentScenario = Scenarios.findOne({_id: activeScenario});
       const currentTurn = currentScenario.turn;
+      const numObj = ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count();
+      const numAlt = ProbabilityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count();
       //Session.set('scenarioTurn', currentTurn);
-
-      var numObj = ConnectivityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count();
-      var numAlt = ProbabilityMatrix.find({scenario_id: activeScenario, user_id: Meteor.userId(), turn: currentTurn}).count();
 
       var columns = [];
       var colHeaders = [];
@@ -67,6 +66,7 @@ Template.probabilityMatrix.onRendered(function () {
 
       myData = ProbabilityMatrix.find({scenario_id: activeScenario, turn: currentTurn, user_id: Meteor.userId()}, {sort: {created_at: 1}}).fetch(); // Tie in our data
       hot.loadData(myData);
+      computation.stop();
     }
   });
 });
