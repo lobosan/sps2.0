@@ -5,6 +5,8 @@ Template.adminScenario.onCreated(function () {
     this.subscribe('participants');
     this.subscribe('objectiveList', this.activeScenario());
     this.subscribe('alternativeList', this.activeScenario());
+    this.subscribe('connectivityMatrix', this.activeScenario());
+    this.subscribe('probabilityMatrix', this.activeScenario());
   });
 });
 
