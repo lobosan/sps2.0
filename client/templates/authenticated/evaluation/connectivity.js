@@ -77,8 +77,9 @@ Template.connectivityMatrix.onRendered(function () {
 });
 
 Template.connectivity.onRendered(function () {
-  var elem = this.find('.js-switch-obj');
-  new Switchery(elem);
+  const instance = Template.instance();
+  let elem = instance.find('.js-switch-obj');
+  if (elem) new Switchery(elem);
 });
 
 Template.connectivity.events({

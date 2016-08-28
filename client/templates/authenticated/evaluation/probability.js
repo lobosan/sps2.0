@@ -72,11 +72,12 @@ Template.probabilityMatrix.onRendered(function () {
 });
 
 Template.probability.onRendered(function () {
-  var elemObj = this.find('.js-switch-obj');
-  new Switchery(elemObj);
+  const instance = Template.instance();
+  var elemObj = instance.find('.js-switch-obj');
+  if (elemObj) new Switchery(elemObj);
 
-  var elemAlt = this.find('.js-switch-alt');
-  new Switchery(elemAlt);
+  var elemAlt = instance.find('.js-switch-alt');
+  if (elemAlt) new Switchery(elemAlt);
 });
 
 Template.probability.events({
