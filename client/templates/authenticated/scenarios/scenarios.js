@@ -49,11 +49,7 @@ Template.scenarios.events({
     var dataTable = $(event.target).closest('table').DataTable();
     var rowData = dataTable.row(event.currentTarget).data();
     if (isUserJoined(rowData._id)) {
-      if (!(Session.get('active_scenario') === undefined || Session.get('active_scenario') === null)) {
-        Session.update('active_scenario', rowData._id);
-      } else {
-        Session.setAuth('active_scenario', rowData._id);
-      }
+      Session.set('active_scenario', rowData._id);
       $('.scenario-name').removeClass('active-scenario');
       $(event.currentTarget).find('i').addClass('active-scenario');
     }
@@ -62,11 +58,7 @@ Template.scenarios.events({
 
 Template.joinScenario.events({
   'click .join-scenario': function (evt, tmpl) {
-    if (!(Session.get('active_scenario') === undefined || Session.get('active_scenario') === null)) {
-      Session.update('active_scenario', tmpl.data._id);
-    } else {
-      Session.setAuth('active_scenario', tmpl.data._id);
-    }
+    Session.set('active_scenario', tmpl.data._id);
     $('.scenario-name').removeClass('active-scenario');
     $(evt.currentTarget).find('i').addClass('active-scenario');
 
@@ -80,8 +72,7 @@ Template.joinScenario.events({
     });
   },
   'click .leave-scenario': function (evt, tmpl) {
-    Session.update('active_scenario', null);
-    Session.setAuth('active_scenario', null);
+    Session.set('active_scenario', null);
     $('.scenario-name').removeClass('active-scenario');
 
     Scenarios.update({_id: this._id}, {
@@ -96,21 +87,13 @@ Template.joinScenario.events({
 
 Template.evaluateScenario.events({
   'click .evaluate': function (evt, tmpl) {
-    if (!(Session.get('active_scenario') === undefined || Session.get('active_scenario') === null)) {
-      Session.update('active_scenario', tmpl.data._id);
-    } else {
-      Session.setAuth('active_scenario', tmpl.data._id);
-    }
+    Session.set('active_scenario', tmpl.data._id);
   }
 });
 
 Template.resultsScenario.events({
   'click .results': function (evt, tmpl) {
-    if (!(Session.get('active_scenario') === undefined || Session.get('active_scenario') === null)) {
-      Session.update('active_scenario', tmpl.data._id);
-    } else {
-      Session.setAuth('active_scenario', tmpl.data._id);
-    }
+    Session.set('active_scenario', tmpl.data._id);
   }
 });
 
@@ -123,11 +106,7 @@ AutoForm.hooks({
     after: {
       insert: function (error, result, template) {
         if (!error) {
-          if (!(Session.get('active_scenario') === undefined || Session.get('active_scenario') === null)) {
-            Session.update('active_scenario', result);
-          } else {
-            Session.setAuth('active_scenario', result);
-          }
+          Session.set('active_scenario', result);
           $('#addScenario').modal('hide');
           $('body').removeClass('modal-open');
           $('.modal-backdrop').remove();

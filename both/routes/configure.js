@@ -6,7 +6,7 @@ FlowRouter.notFound = {
 
 Accounts.onLogin(() => {
   let currentRoute = FlowRouter.current();
-  if (currentRoute && currentRoute.route.group.name === 'public') {
+  if (currentRoute && currentRoute.route.group && currentRoute.route.group.name === 'public') {
     Modules.both.redirectUser();
   }
 });

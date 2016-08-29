@@ -12,6 +12,7 @@ Template.header.events({
       if ( error ) {
         Bert.alert( error.reason, 'warning' );
       } else {
+        Session.clear();
         Bert.alert( 'Logged out!', 'success' );
       }
     });
