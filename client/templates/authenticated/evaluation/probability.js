@@ -8,6 +8,11 @@ Template.probabilityMatrix.onCreated(function () {
 });
 
 Template.probabilityMatrix.onRendered(function () {
+  const elemObj = document.getElementsByClassName('js-switch-obj');
+  const elemAlt = document.getElementsByClassName('js-switch-alt');
+  new Switchery(elemObj[0]);
+  new Switchery(elemAlt[0]);
+
   this.autorun((computation) => {
     if (this.subscriptionsReady()) {
       const activeScenario = Session.get('active_scenario');
@@ -71,15 +76,6 @@ Template.probabilityMatrix.onRendered(function () {
   });
 });
 
-Template.probability.onRendered(function () {
-  const instance = Template.instance();
-  var elemObj = instance.find('.js-switch-obj');
-  if (elemObj) new Switchery(elemObj);
-
-  var elemAlt = instance.find('.js-switch-alt');
-  if (elemAlt) new Switchery(elemAlt);
-});
-
 Template.probability.events({
   'change .js-switch-obj': function (event, template) {
     var checked = template.$(event.target)[0].checked;
@@ -96,11 +92,5 @@ Template.probability.events({
     } else {
       template.$('#collapseAlternatives').collapse('hide');
     }
-  }/*,
-  'click #remove-cm': function () {
-    Meteor.call('removeAllConMat');
-    Meteor.call('removeAllProbMat');
-    Scenarios.update({_id: Session.get('active_scenario')}, {$set: {state: 'Open', turn: 0}});
-    FlowRouter.go('adminScenario');
-  }*/
+  }
 });

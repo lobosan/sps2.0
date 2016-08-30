@@ -7,6 +7,9 @@ Template.connectivityMatrix.onCreated(function () {
 });
 
 Template.connectivityMatrix.onRendered(function () {
+  const elem = document.getElementsByClassName('js-switch-obj');
+  new Switchery(elem[0]);
+
   this.autorun((computation) => {
     if (this.subscriptionsReady()) {
       const activeScenario = Session.get('active_scenario');
@@ -76,12 +79,6 @@ Template.connectivityMatrix.onRendered(function () {
   });
 });
 
-Template.connectivity.onRendered(function () {
-  const instance = Template.instance();
-  let elem = instance.find('.js-switch-obj');
-  if (elem) new Switchery(elem);
-});
-
 Template.connectivity.events({
   'change .js-switch-obj': function (event, template) {
     var checked = template.$(event.target)[0].checked;
@@ -90,11 +87,5 @@ Template.connectivity.events({
     } else {
       template.$('#collapseObjectives').collapse('hide');
     }
-  }/*,
-   'click #remove-cm': function () {
-   Meteor.call('removeAllConMat');
-   Meteor.call('removeAllProbMat');
-   Scenarios.update({_id: Session.get('active_scenario')}, {$set: {state: 'Open', turn: 0}});
-   FlowRouter.go('adminScenario');
-   }*/
+  }
 });

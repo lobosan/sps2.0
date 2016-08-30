@@ -1,76 +1,80 @@
 <template name="results">
 	{{#if isInRole 'admin, private, public'}}
-		{{#if Template.subscriptionsReady}}
-			{{> defaultTitle currentPage = "Results"}}
+		{{> defaultTitle currentPage = "Results"}}
 
-			<div class="bottom-buffer">
-				<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
-					<i class="fa fa-angle-double-left"></i> Probability Matrix
-				</a>
+		<div class="bottom-buffer">
+			<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
+				<i class="fa fa-angle-double-left"></i> Probability Matrix
+			</a>
 
-				<form class="form-inline">
-						<button id="complete_values" type="button" class="btn btn-success switcher-separator">
-							<i class="fa fa-check"></i> Confirm Evaluation
-						</button>
+			<form class="form-inline">
+				<button id="complete_values" type="button" class="btn btn-success switcher-separator">
+					<i class="fa fa-check"></i> Confirm Evaluation
+				</button>
 
-						Turn: <select name="turn" id="turn" class="form-control switcher-separator">
-						<option value="" selected>Select one</option>
-						{{#each turns}}
-							<option value="{{turn}}">{{turn}}</option>
-						{{/each}}
-					</select>
-						Objectives <span class="switcher-separator"><input type="checkbox" class="js-switch-obj"/></span>
-						Alternatives <input type="checkbox" class="js-switch-alt"/>
-				</form>
-			</div>
+				Turn: <select name="turn" id="turn" class="form-control switcher-separator">
+				<option value="" selected>Select one</option>
+				{{#each turns}}
+					<option value="{{turn}}">{{turn}}</option>
+				{{/each}}
+			</select>
+				Objectives <span class="switcher-separator"><input type="checkbox" class="js-switch-obj"/></span>
+				Alternatives <input type="checkbox" class="js-switch-alt"/>
+			</form>
+		</div>
 
-			{{> objectivesAccordion}}
-			{{> alternativesAccordion}}
+		{{> objectivesAccordion}}
+		{{> alternativesAccordion}}
 
-			<div id="influence-dependence-user" class="top-buffer"></div>
-			<div id="probability-user" class="top-buffer-medium"></div>
+		<div id="influence-dependence-user" class="top-buffer"></div>
+		<div id="probability-user" class="top-buffer-medium"></div>
 
-			<div id="influence-dependence-global" class="top-buffer-medium"></div>
-			<table class="table table-bordered table-striped table-hover">
-				<thead>
-				<tr>
-					<th>Objective Name</th>
-					<th>Coordinates</th>
-				</tr>
-				</thead>
-				<tbody>
-				{{#with objCoord}}
-					{{#each objCoord}}
-						<tr class="objectiveRow">
-							<td class="col-md-5">{{objName}}</td>
-							<td class="col-md-7">{{coordinates}}</td>
-						</tr>
-					{{/each}}
-				{{/with}}
-				</tbody>
-			</table>
+		<div id="influence-dependence-global" class="top-buffer-medium"></div>
+		<table class="table table-bordered table-striped table-hover">
+			<thead>
+			<tr>
+				<th>Objective Name</th>
+				<th>Coordinates</th>
+			</tr>
+			</thead>
+			<tbody>
+			{{#with objCoord}}
+				{{#each objCoord}}
+					<tr class="objectiveRow">
+						<td class="col-md-5">{{objName}}</td>
+						<td class="col-md-7">{{coordinates}}</td>
+					</tr>
+				{{/each}}
+			{{/with}}
+			</tbody>
+		</table>
 
-			<div id="probability-global" class="top-buffer-medium"></div>
-			<table class="table table-bordered table-striped table-hover">
-				<thead>
-				<tr>
-					<th>Alternative Name</th>
-					<th>Probability</th>
-				</tr>
-				</thead>
-				<tbody>
-				{{#with probCoord}}
-					{{#each probCoord}}
-						<tr class="objectiveRow">
-							<td class="col-md-5">{{altName}}</td>
-							<td class="col-md-7">{{probability}} %</td>
-						</tr>
-					{{/each}}
-				{{/with}}
-				</tbody>
-			</table>
-		{{else}}
-			{{> spinner}}
-		{{/if}}
+		<div id="probability-global" class="top-buffer-medium"></div>
+		<table class="table table-bordered table-striped table-hover">
+			<thead>
+			<tr>
+				<th>Alternative Name</th>
+				<th>Probability</th>
+			</tr>
+			</thead>
+			<tbody>
+			{{#with probCoord}}
+				{{#each probCoord}}
+					<tr class="objectiveRow">
+						<td class="col-md-5">{{altName}}</td>
+						<td class="col-md-7">{{probability}} %</td>
+					</tr>
+				{{/each}}
+			{{/with}}
+			</tbody>
+		</table>
+		{{>reports}}
+	{{/if}}
+</template>
+
+<template name="reports">
+	{{#if Template.subscriptionsReady}}
+	{{else}}
+		{{> spinner}}
 	{{/if}}
 </template>

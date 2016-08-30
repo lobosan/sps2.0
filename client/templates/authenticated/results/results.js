@@ -1,55 +1,31 @@
-Template.results.onCreated(function () {
-  this.isActiveScenarioReady = new ReactiveVar(false);
-  this.isObjectiveListReady = new ReactiveVar(false);
-  this.isAlternativeListReady = new ReactiveVar(false);
-  this.isConnectivityMatrixReady = new ReactiveVar(false);
-  this.isProbabilityMatrixReady = new ReactiveVar(false);
+Template.reports.onCreated(function () {
+  this.activeScenario = () => Session.get('active_scenario');
 
   this.autorun(() => {
-    const activeScenario = Session.get('active_scenario');
-    if (!activeScenario) return;
-
-    const handleActiveScenario = Meteor.subscribe('activeScenario', activeScenario);
-    const handleObjectiveList = Meteor.subscribe('objectiveList', activeScenario);
-    const handleAlternativeList = Meteor.subscribe('alternativeList', activeScenario);
-    const handleConnectivityMatrix = Meteor.subscribe('connectivityMatrix', activeScenario);
-    const handleProbabilityMatrix = Meteor.subscribe('probabilityMatrix', activeScenario);
-
-    this.isActiveScenarioReady.set(handleActiveScenario.ready());
-    this.isObjectiveListReady.set(handleObjectiveList.ready());
-    this.isAlternativeListReady.set(handleAlternativeList.ready());
-    this.isConnectivityMatrixReady.set(handleConnectivityMatrix.ready());
-    this.isProbabilityMatrixReady.set(handleProbabilityMatrix.ready());
-
-    if (handleActiveScenario.ready() && handleObjectiveList.ready() && handleAlternativeList.ready() && handleConnectivityMatrix.ready() && handleProbabilityMatrix.ready()) {
-      const currentScenario = Scenarios.findOne({_id: activeScenario});
-      const connectivityMatrixScenarioTurn = ConnectivityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
-      const probabilityMatrixScenarioTurn = ProbabilityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
-
-      if (activeScenario && currentScenario && connectivityMatrixScenarioTurn && probabilityMatrixScenarioTurn) {
-        Session.set('currentScenario', currentScenario);
-        Session.set('connectivityMatrixScenarioTurn', connectivityMatrixScenarioTurn);
-        Session.set('probabilityMatrixScenarioTurn', probabilityMatrixScenarioTurn);
-      }
-    }
+    this.subscribe('connectivityMatrix', this.activeScenario());
+    this.subscribe('probabilityMatrix', this.activeScenario());
   });
 });
 
-Template.results.onRendered(function () {
-  var elemObj = this.find('.js-switch-obj');
-  var initObj = new Switchery(elemObj);
-
-  var elemAlt = this.find('.js-switch-alt');
-  var initAlt = new Switchery(elemAlt);
+Template.reports.onRendered(function () {
+  const elemObj = document.getElementsByClassName('js-switch-obj');
+  const elemAlt = document.getElementsByClassName('js-switch-alt');
+  new Switchery(elemObj[0]);
+  new Switchery(elemAlt[0]);
 
   this.autorun(() => {
     if (this.subscriptionsReady()) {
-      if (!Session.get('currentScenario') && !Session.get('connectivityMatrixScenarioTurn') && !Session.get('probabilityMatrixScenarioTurn')) return;
-      if (this.$('#turn').val() == '') {
-        var currentScenario = Session.get('currentScenario');
-        Session.set('turn', currentScenario.turn);
-      }
-      var results = calculations(Session.get('currentScenario'), Session.get('connectivityMatrixScenarioTurn'), Session.get('probabilityMatrixScenarioTurn'));
+      const activeScenario = Session.get('active_scenario');
+      const currentScenario = Scenarios.findOne({_id: activeScenario});
+      const currentTurn = currentScenario.turn;
+      const selectTurn = document.getElementById('turn');
+      const strSelectTurn = selectTurn.options[selectTurn.selectedIndex].text;
+      if (strSelectTurn == 'Select one') Session.set('turn', currentTurn);
+
+      const connectivityMatrixScenarioTurn = ConnectivityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
+      const probabilityMatrixScenarioTurn = ProbabilityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
+
+      let results = calculations(currentScenario, connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn);
       buildInfluenceDependenceUser(results.infDepCurrentUser);
       buildProbabilityUser(results.probabilityCurrentUser);
       buildInfluenceDependenceGlobal(results.infDepGlobal);
@@ -59,29 +35,29 @@ Template.results.onRendered(function () {
 });
 
 Template.results.events({
-  'click #complete_values': function (event, instance) {
+  'click #complete_values': function (event, template) {
     Meteor.call('updateCompletedValues', Session.get('active_scenario'), Meteor.userId(), 'Yes');
     toastr.options = {"timeOut": "8000", "progressBar": true};
     toastr.success('You can still update the values until the owner of the scenario changes the turn or finishes the evaluation', 'Evaluation confirmed');
   },
-  'change #turn': function (event, instance) {
-    var turn = instance.$(event.target).val();
+  'change #turn': function (event, template) {
+    var turn = template.$(event.target).val();
     Session.set('turn', parseInt(turn));
   },
-  'change .js-switch-obj': function (event, instance) {
-    var checked = instance.$(event.target)[0].checked;
+  'change .js-switch-obj': function (event, template) {
+    var checked = template.$(event.target)[0].checked;
     if (checked) {
-      instance.$('#collapseObjectives').collapse('show');
+      template.$('#collapseObjectives').collapse('show');
     } else {
-      instance.$('#collapseObjectives').collapse('hide');
+      template.$('#collapseObjectives').collapse('hide');
     }
   },
-  'change .js-switch-alt': function (event, instance) {
-    var checked = instance.$(event.target)[0].checked;
+  'change .js-switch-alt': function (event, template) {
+    var checked = template.$(event.target)[0].checked;
     if (checked) {
-      instance.$('#collapseAlternatives').collapse('show');
+      template.$('#collapseAlternatives').collapse('show');
     } else {
-      instance.$('#collapseAlternatives').collapse('hide');
+      template.$('#collapseAlternatives').collapse('hide');
     }
   }
 });
