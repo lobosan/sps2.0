@@ -2,11 +2,18 @@
 	{{#if isInRole 'admin, private, public'}}
 		{{> defaultTitle currentPage = "Connectivity Matrix"}}
 		<div class="bottom-buffer">
+			<button type="button" class="btn btn-success switcher-separator" data-toggle="modal" data-target="#addObjective">
+				<i class="fa fa-plus-circle"></i> Add Objectives
+			</button>
 			Objectives <input type="checkbox" class="js-switch-obj"/>
 			<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
 				Probability Matrix <i class="fa fa-angle-double-right"></i>
 			</a>
+			<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'scenarios'}}">
+				<i class="fa fa-angle-double-left"></i> Scenarios
+			</a>
 		</div>
+		{{>addObjective}}
 		{{> objectivesAccordion}}
 
 		<div class="handsontable top-buffer" id="connectivity-matrix"></div>

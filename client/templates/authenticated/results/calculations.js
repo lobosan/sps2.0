@@ -18,7 +18,7 @@ chartsDataUser = function (userId, connectivityMatrixScenarioTurn, probabilityMa
     }, 0);
     influence.push(sum);
   }
-  console.log('influence: ' + influence);
+  // console.log('influence: ' + influence);
 
   // Dependence
   var dependence = [];
@@ -31,21 +31,21 @@ chartsDataUser = function (userId, connectivityMatrixScenarioTurn, probabilityMa
       return parseInt(memo) + parseInt(num);
     }, 0));
   });
-  console.log('dependence: ' + dependence);
+  // console.log('dependence: ' + dependence);
 
   // Influencia Dependencia
   var infDepCurrentUser = [];
   for (var r = 0; r < influence.length; r++) {
     infDepCurrentUser.push([dependence[r], influence[r]]);
   }
-  console.table(infDepCurrentUser);
+  // console.table(infDepCurrentUser);
 
   // Vector 1
   var vector1 = [];
   for (var k = 0; k < influence.length; k++) {
     vector1.push(Math.sqrt(Math.pow(influence[k], 2) + Math.pow(dependence[k], 2)));
   }
-  console.log('vector1: ' + vector1);
+  // console.log('vector1: ' + vector1);
 
   // Vector 2
   var vector2 = [];
@@ -56,14 +56,14 @@ chartsDataUser = function (userId, connectivityMatrixScenarioTurn, probabilityMa
     else if (influence[m] < (infProm) && dependence[m] > infProm) vector2.push(0.5);
     else vector2.push(0.25);
   }
-  console.log('vector2: ' + vector2);
+  // console.log('vector2: ' + vector2);
 
   // Vector 3
   var vector3 = [];
   for (var n = 0; n < influence.length; n++) {
     vector3.push((vector1[n] * vector2[n]));
   }
-  console.log('vector3: ' + vector3);
+  // console.log('vector3: ' + vector3);
 
   // Evi
   var probMatrixCurrentUser = [];
@@ -80,7 +80,7 @@ chartsDataUser = function (userId, connectivityMatrixScenarioTurn, probabilityMa
     }
     evi.push(tempEvi);
   }
-  console.log('evi: ' + evi);
+  // console.log('evi: ' + evi);
 
   // Probability
   var probabilityCurrentUser = [];
@@ -90,7 +90,7 @@ chartsDataUser = function (userId, connectivityMatrixScenarioTurn, probabilityMa
   _.each(evi, function (e) {
     probabilityCurrentUser.push((e / sumEvi) * 100);
   });
-  console.log(probabilityCurrentUser);
+  // console.log(probabilityCurrentUser);
 
   return {
     infDepCurrentUser: infDepCurrentUser,
@@ -113,7 +113,7 @@ calculations = function (currentScenario, connectivityMatrixScenarioTurn, probab
   _.each(otherParticipants, function (participantId) {
     infDepParticipants.push(chartsDataUser(participantId, connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn).infDepCurrentUser);
   });
-  console.log(infDepParticipants);
+  // console.log(infDepParticipants);
 
   // Influencia Dependencia Global
   var numParticipants = infDepParticipants.length;
@@ -128,7 +128,7 @@ calculations = function (currentScenario, connectivityMatrixScenarioTurn, probab
     infDepGlobal.push([temp1 / numParticipants, temp2 / numParticipants]);
   }
   Session.set('infDepGlobal', infDepGlobal);
-  console.log(infDepGlobal);
+  // console.log(infDepGlobal);
 
   // Probabilidad Global
   var probabilityParticipants = [chartsCurrentUser.probabilityCurrentUser];
@@ -145,11 +145,11 @@ calculations = function (currentScenario, connectivityMatrixScenarioTurn, probab
     probabilityGlobal.push(temp / participantIds.length);
   }
   Session.set('probGlobal', probabilityGlobal);
-  //console.log(probabilityGlobal);
+  // console.log(probabilityGlobal);
   var total = _.reduce(probabilityGlobal, function (sum, el) {
     return sum + el;
   }, 0);
-  console.log(total);
+  // console.log(total);
 
   return {
     infDepCurrentUser: chartsCurrentUser.infDepCurrentUser,

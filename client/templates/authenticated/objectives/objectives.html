@@ -2,10 +2,9 @@
 	{{#if isInRole 'admin, private, public'}}
 		{{#if Template.subscriptionsReady}}
 			{{> defaultTitle currentPage="Objectives"}}
-
 			<div class="bottom-buffer">
 				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addObjective">
-					<i class="fa fa-plus-circle"></i> Add Objective
+					<i class="fa fa-plus-circle"></i> Add Objectives
 				</button>
 
 				<a class="btn btn-default pull-right" href="{{pathFor 'alternatives'}}">

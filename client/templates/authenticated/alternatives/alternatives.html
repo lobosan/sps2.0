@@ -2,10 +2,9 @@
 	{{#if isInRole 'admin, private, public'}}
 		{{#if Template.subscriptionsReady}}
 			{{> defaultTitle currentPage="Alternatives"}}
-
 			<div class="bottom-buffer">
 				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAlternative">
-					<i class="fa fa-plus-circle"></i> Add Alternative
+					<i class="fa fa-plus-circle"></i> Add Alternatives
 				</button>
 
 				<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
