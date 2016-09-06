@@ -8,6 +8,7 @@
 						<th>Objective</th>
 						<th>Name</th>
 						<th>Description</th>
+						<th>Turn</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -15,7 +16,8 @@
 						<tr class="objectiveRow">
 							<td class="col-md-1">Obj{{index}}</td>
 							<td class="col-md-4">{{name}}</td>
-							<td class="col-md-7">{{description}}</td>
+							<td class="col-md-6">{{description}}</td>
+							<td class="col-md-1">{{turn}}</td>
 						</tr>
 					{{/each}}
 					</tbody>
@@ -35,6 +37,7 @@
 				<th>Alternative</th>
 				<th>Name</th>
 				<th>Description</th>
+				<th>Turn</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -42,7 +45,8 @@
 				<tr class="objectiveRow">
 					<td class="col-md-1">Alt{{index}}</td>
 					<td class="col-md-4">{{name}}</td>
-					<td class="col-md-7">{{description}}</td>
+					<td class="col-md-6">{{description}}</td>
+					<td class="col-md-1">{{turn}}</td>
 				</tr>
 			{{/each}}
 			</tbody>

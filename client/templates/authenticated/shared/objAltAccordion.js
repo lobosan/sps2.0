@@ -32,12 +32,12 @@ Template.objectivesAccordion.helpers({
       }
     }
 
-    var objectives = Objectives.find({scenario_id: activeScenario, turn: {$lte: turn}}).fetch();
+    var objectives = Objectives.find({scenario_id: activeScenario, turn: {$lte: turn}, active: 'Yes'}).fetch();
     var objectivesList = [];
     var objectivesNames = [];
     var index = 1;
     _.each(objectives, function (objective) {
-      objectivesList.push({index: index, name: objective.name, description: objective.description});
+      objectivesList.push({index: index, name: objective.name, description: objective.description, turn: objective.turn});
       objectivesNames.push({objName: objective.name});
       index++;
     });
@@ -64,12 +64,12 @@ Template.alternativesAccordion.helpers({
       }
     }
 
-    var alternatives = Alternatives.find({scenario_id: activeScenario, turn: {$lte: turn}}).fetch();
+    var alternatives = Alternatives.find({scenario_id: activeScenario, turn: {$lte: turn}, active: 'Yes'}).fetch();
     var alternativesList = [];
     var alternativesNames = [];
     var index = 1;
     _.each(alternatives, function (alternative) {
-      alternativesList.push({index: index, name: alternative.name, description: alternative.description});
+      alternativesList.push({index: index, name: alternative.name, description: alternative.description, turn: alternative.turn});
       alternativesNames.push({altName: alternative.name});
       index++;
     });

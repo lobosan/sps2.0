@@ -8,7 +8,7 @@ Template.objectives.onCreated(function () {
 
 Template.objectives.helpers({
   objectiveList: function () {
-    return Objectives.find();
+    return Objectives.find({active: 'Yes'});
   }
 });
 

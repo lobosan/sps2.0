@@ -27,5 +27,17 @@ Alternatives.attachSchema(new SimpleSchema({
     autoform: {
       type: "textarea"
     }
+  },
+  active: {
+    type: String,
+    allowedValues: [
+      "Yes",
+      "No"
+    ],
+    defaultValue: "Yes",
+    autoform: {
+      type: "hidden",
+      label: false
+    }
   }
 }));

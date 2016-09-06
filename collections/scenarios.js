@@ -174,7 +174,7 @@ TabularTables.CurrentScenarios = new Tabular.Table({
 TabularTables.PublicScenarios = new Tabular.Table({
   name: "PublicScenarios",
   collection: Scenarios,
-  selector: function() {
+  selector: function(userId) {
     return {
       scope: 'Public'
     };

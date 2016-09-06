@@ -7,7 +7,7 @@
 			{{#if isActiveScenario}}
 				<span class="legend-active-scenario" title="Active Scenario">
 					<i class="active-scenario fa fa-toggle-on"></i> {{activeScenario.name}}
-					{{#if notEqual activeScenario.turn 0}} - Turn: #{{activeScenario.turn}}{{/if}}
+					{{#if $neq activeScenario.turn 0}} - Turn: #{{activeScenario.turn}}{{/if}}
 				</span>
 			{{/if}}
 		</div>

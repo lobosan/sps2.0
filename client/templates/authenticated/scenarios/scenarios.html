@@ -11,7 +11,7 @@
 					{{#if isActiveScenario}}
 						<span class="legend-active-scenario" title="Active Scenario">
 							<i class="active-scenario fa fa-toggle-on"></i> {{activeScenario.name}}
-							{{#if notEqual activeScenario.turn 0}} - Turn: #{{activeScenario.turn}}{{/if}}
+							{{#if $neq activeScenario.turn 0}} - Turn: #{{activeScenario.turn}}{{/if}}
 						</span>
 					{{/if}}
 				</div>
@@ -41,14 +41,14 @@
 <template name="joinScenario">
 	{{#if isAuthor}}Owner{{/if}}
 	{{#if isGuest}}
-		{{#if equal state "Open"}}
+		{{#if $eq state "Open"}}
 			<button class="btn btn-default btn-action-sps leave-scenario">LEAVE</button>
 		{{else}}
 			Joined
 		{{/if}}
 	{{/if}}
 	{{#unless isJoined}}
-		{{#if equal state "Open"}}
+		{{#if $eq state "Open"}}
 			<button class="btn btn-default btn-action-sps join-scenario">JOIN</button>
 		{{else}}
 			-
@@ -57,16 +57,24 @@
 </template>
 
 <template name="evaluateScenario">
-	{{#if equal state "Started"}}
-		<a id="btn-connectivity-matrix" class="btn btn-default btn-action-sps fa fa-th evaluate" href="{{pathFor 'connectivity'}}"></a>
+	{{#if $eq state "Started"}}
+		{{#if isJoined}}
+			<a id="btn-connectivity-matrix" class="btn btn-default btn-action-sps fa fa-th evaluate" href="{{pathFor 'connectivity'}}"></a>
+		{{else}}
+			-
+		{{/if}}
 	{{else}}
 		-
 	{{/if}}
 </template>
 
 <template name="resultsScenario">
-	{{#if notEqual state "Open"}}
-		<a class="btn btn-default btn-action-sps fa fa-bar-chart results" href="{{pathFor 'results'}}"></a>
+	{{#if $neq state "Open"}}
+		{{#if isJoined}}
+			<a class="btn btn-default btn-action-sps fa fa-bar-chart results" href="{{pathFor 'results'}}"></a>
+		{{else}}
+			-
+		{{/if}}
 	{{else}}
 		-
 	{{/if}}

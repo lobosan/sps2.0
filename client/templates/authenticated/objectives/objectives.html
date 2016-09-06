@@ -17,13 +17,15 @@
 				<tr>
 					<th>Name</th>
 					<th>Description</th>
+					<th>Turn</th>
 				</tr>
 				</thead>
 				<tbody>
 				{{#each objectiveList}}
 					<tr class="objectiveRow">
-						<td>{{name}}</td>
-						<td>{{description}}</td>
+						<td class="col-md-5">{{name}}</td>
+						<td class="col-md-6">{{description}}</td>
+						<td class="col-md-1">{{turn}}</td>
 					</tr>
 				{{/each}}
 				</tbody>

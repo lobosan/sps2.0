@@ -10,6 +10,18 @@ Template.adminScenario.onCreated(function () {
   });
 });
 
+/*Template.switchery.onRendered(function () {
+  let activeObjs = Array.prototype.slice.call(document.querySelectorAll('.js-switch-obj'));
+  activeObjs.forEach(function (html) {
+    new Switchery(html, {size: 'small'});
+  });
+
+  let activeAlts = Array.prototype.slice.call(document.querySelectorAll('.js-switch-alt'));
+  activeAlts.forEach(function (html) {
+    new Switchery(html, {size: 'small'});
+  });
+});*/
+
 Template.adminScenario.helpers({
   scenarioDetailsAdmin: function () {
     return Scenarios.findOne({_id: Session.get('active_scenario')});
@@ -44,6 +56,18 @@ Template.adminScenario.helpers({
 });
 
 Template.adminScenario.events({
+  'change .js-switch-obj': function (event, template) {
+    let objId = template.$(event.target)[0].value;
+    let active = template.$(event.target)[0].checked;
+    active = active ? 'Yes' : 'No';
+    Meteor.call('objectiveActiveInactive', objId, active);
+  },
+  'change .js-switch-alt': function (event, template) {
+    let altId = template.$(event.target)[0].value;
+    let active = template.$(event.target)[0].checked;
+    active = active ? 'Yes' : 'No';
+    Meteor.call('alternativeActiveInactive', altId, active);
+  },
   'click #next-turn': function () {
     var activeScenario = Scenarios.findOne({_id: Session.get('active_scenario')});
 
@@ -58,8 +82,8 @@ Template.adminScenario.events({
       toastr.options = {"timeOut": "7000", "progressBar": true};
       toastr.error('Some guests have not confirmed their evaluation, you can send them an email to ask them to do it', 'Evaluations not confirmed');
     } else {
-      var numObj = Objectives.find({scenario_id: Session.get('active_scenario')}).count();
-      var numAlt = Alternatives.find({scenario_id: Session.get('active_scenario')}).count();
+      var numObj = Objectives.find({scenario_id: Session.get('active_scenario'), active: 'Yes'}).count();
+      var numAlt = Alternatives.find({scenario_id: Session.get('active_scenario'), active: 'Yes'}).count();
 
       var author = [activeScenario.author];
       var guests = [];
@@ -76,7 +100,7 @@ Template.adminScenario.events({
 
       if (numObj < 3 || numAlt < 3 || participants.length < 2) {
         toastr.options = {"timeOut": "7000", "progressBar": true};
-        toastr.error('Minimum 3 objectives, 3 alternatives and 2 participants are required to start the evaluation', 'Requirements not met');
+        toastr.error('Minimum 3 active objectives, 3 active alternatives and 2 participants are required to start the evaluation', 'Requirements not met');
       } else if (activeScenario.turn < 1) {
         swal({
             title: "Are you sure?",
@@ -129,7 +153,7 @@ Template.adminScenario.events({
                 conMat[i]['o' + j] = newMat[i][j + 2];
               }
             }
-            console.log(conMat);
+            // console.log(conMat);
 
             _.each(conMat, function (doc) {
               ConnectivityMatrix.insert(doc);
@@ -173,7 +197,7 @@ Template.adminScenario.events({
               }
             }
 
-            console.log(probMat);
+            // console.log(probMat);
             _.each(probMat, function (doc) {
               ProbabilityMatrix.insert(doc);
             });
@@ -208,11 +232,11 @@ Template.adminScenario.events({
         /*** End update turn and list of guests ***/
 
         var previousTurn = activeScenario.turn;
-        var objsPreviousTurns = Objectives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}}).count();
-        var altsPreviousTurns = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}}).count();
+        var objsPreviousTurns = Objectives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}, active: 'Yes'}).count();
+        var altsPreviousTurns = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}, active: 'Yes'}).count();
         var turn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
-        var objsNextTurn = Objectives.find({scenario_id: Session.get('active_scenario'), turn: turn}).count();
-        var altsNextTurn = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: turn}).count();
+        var objsNextTurn = Objectives.find({scenario_id: Session.get('active_scenario'), turn: turn, active: 'Yes'}).count();
+        var altsNextTurn = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: turn, active: 'Yes'}).count();
 
         /*** Connectivity Matrix Other Turns ***/
         var conMatrix = ConnectivityMatrix.find({scenario_id: Session.get('active_scenario'), turn: previousTurn}, {sort: {created_at: 1}}).fetch();
@@ -317,7 +341,7 @@ Template.adminScenario.events({
 
     var not_complete = _.contains(complete_values, 'No');
 
-    console.log(complete_values.length);
+    // console.log(complete_values.length);
 
     if (not_complete && activeScenario.turn > 0 || complete_values.length === 0) {
       toastr.options = {"timeOut": "7000", "progressBar": true};

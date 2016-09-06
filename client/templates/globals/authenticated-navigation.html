@@ -10,7 +10,7 @@
 			{{#if isScenarioAuthor}}
 				<li class="{{currentRoute 'adminScenario'}}"><a href="{{pathFor 'adminScenario'}}"><i class="glyphicon glyphicon-flag"></i> Admin</a></li>
 			{{/if}}
-			{{#if equal activeScenario.state "Started"}}
+			{{#if $eq activeScenario.state "Started"}}
 				<li class="{{currentRoute 'connectivity'}}"><a href="{{pathFor 'connectivity'}}"><i class="glyphicon glyphicon-th"></i> Evaluation</a></li>
 			{{/if}}
 		{{/if}}

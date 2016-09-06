@@ -85,9 +85,21 @@ Template.joinScenario.events({
   }
 });
 
+Template.evaluateScenario.helpers({
+  isJoined: function () {
+    return isUserJoined(this._id);
+  }
+});
+
 Template.evaluateScenario.events({
   'click .evaluate': function (evt, tmpl) {
     Session.set('active_scenario', tmpl.data._id);
+  }
+});
+
+Template.resultsScenario.helpers({
+  isJoined: function () {
+    return isUserJoined(this._id);
   }
 });
 

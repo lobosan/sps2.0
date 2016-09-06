@@ -4,9 +4,9 @@
 			{{> defaultTitle currentPage="Admin Scenario"}}
 
 			<div class="bottom-buffer">
-				{{#if notEqual scenarioDetailsAdmin.state "Finished"}}
+				{{#if $neq scenarioDetailsAdmin.state "Finished"}}
 					<button id="next-turn" type="button" class="btn btn-success">
-						{{#if equal scenarioDetailsAdmin.turn 0}}
+						{{#if $eq scenarioDetailsAdmin.turn 0}}
 							<i class="glyphicon glyphicon-play"></i> Start Evaluation
 						{{else}}
 							<i class="glyphicon glyphicon-play"></i> Next Turn
@@ -14,13 +14,11 @@
 					</button>
 				{{/if}}
 
-				{{#if equal scenarioDetailsAdmin.state "Finished"}}
+				{{#if $eq scenarioDetailsAdmin.state "Finished"}}
 					<button type="button" class="btn btn-warning" disabled><i class="fa fa-exclamation-circle"></i> Scenario Finished</button>
 				{{else}}
 					<button id="finish-evaluation" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-stop"></i> Finish Evaluation</button>
 				{{/if}}
-
-				<!--<button type="button" class="btn btn-success {{!selected scenarioDetailsAdmin.state "Finished" "active"}}">Finished</button>-->
 
 				<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
 					<i class="fa fa-angle-double-left"></i> Invite Actors
@@ -69,13 +67,23 @@
 					<tr>
 						<th>Name</th>
 						<th>Description</th>
+						<th>Turn</th>
+						<th>Active</th>
 					</tr>
 					</thead>
 					<tbody>
 					{{#each objectivesScenarioAdmin}}
 						<tr>
 							<td class="col-md-5">{{name}}</td>
-							<td class="col-md-7">{{description}}</td>
+							<td class="col-md-5">{{description}}</td>
+							<td class="col-md-1">{{turn}}</td>
+							<td class="col-md-1">
+								{{#if $gt turn scenarioDetailsAdmin.turn}}
+									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} class="js-switch-obj"/>
+								{{else}}
+									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} disabled class="js-switch-obj"/>
+								{{/if}}
+							</td>
 						</tr>
 					{{/each}}
 					</tbody>
@@ -89,20 +97,34 @@
 					<tr>
 						<th>Name</th>
 						<th>Description</th>
+						<th>Turn</th>
+						<th>Active</th>
 					</tr>
 					</thead>
 					<tbody>
 					{{#each alternativesScenarioAdmin}}
 						<tr>
 							<td class="col-md-5">{{name}}</td>
-							<td class="col-md-7">{{description}}</td>
+							<td class="col-md-5">{{description}}</td>
+							<td class="col-md-1">{{turn}}</td>
+							<td class="col-md-1">
+								{{#if $gt turn scenarioDetailsAdmin.turn}}
+									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} class="js-switch-alt"/>
+								{{else}}
+									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} disabled class="js-switch-alt"/>
+								{{/if}}
+							</td>
 						</tr>
 					{{/each}}
 					</tbody>
 				</table>
 			</div>
+			<!--{{> switchery}}-->
 		{{else}}
 			{{> spinner}}
 		{{/if}}
 	{{/if}}
+</template>
+
+<template name="switchery">
 </template>

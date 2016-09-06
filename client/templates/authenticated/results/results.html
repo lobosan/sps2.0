@@ -3,9 +3,11 @@
 		{{> defaultTitle currentPage = "Results"}}
 
 		<div class="bottom-buffer">
-			<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
-				<i class="fa fa-angle-double-left"></i> Probability Matrix
-			</a>
+			{{#if $neq activeScenario.state 'Finished'}}
+				<a class="btn btn-default pull-right" href="{{pathFor 'probability'}}">
+					<i class="fa fa-angle-double-left"></i> Probability Matrix
+				</a>
+			{{/if}}
 
 			<form class="form-inline">
 				<button id="complete_values" type="button" class="btn btn-success switcher-separator">

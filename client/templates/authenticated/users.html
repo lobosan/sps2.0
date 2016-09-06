@@ -14,13 +14,13 @@
 				{{#each users}}
 					<tr class="actorRow">
 						<td class="text-middle">{{profile.name}}</td>
-						<td class="text-left text-middle">{{#if isCurrentUser _id}}<label class="label label-success">You!</label>{{/if}} {{emails.[0].address}}</td>
+						<td class="text-left text-middle">{{#if $eq _id $.Meteor.userId}}<label class="label label-success">You!</label>{{/if}} {{emails.[0].address}}</td>
 						<td>
 							<select {{disableIfAdmin _id}} name="userRole" class="form-control">
-								<option selected="{{selected roles.[0] 'admin'}}" value="admin">Admin</option>
-								<option selected="{{selected roles.[0] 'private'}}" value="private">Private</option>
-								<option selected="{{selected roles.[0] 'public'}}" value="public">Public</option>
-								<option selected="{{selected roles.[0] 'disabled'}}" value="disabled">Disabled</option>
+								<option {{isSelected roles.[0] 'admin'}} value="admin">Admin</option>
+								<option {{isSelected roles.[0] 'private'}} value="private">Private</option>
+								<option {{isSelected roles.[0] 'public'}} value="public">Public</option>
+								<option {{isSelected roles.[0] 'disabled'}} value="disabled">Disabled</option>
 							</select>
 						</td>
 					</tr>

@@ -8,7 +8,7 @@ Template.alternatives.onCreated(function () {
 
 Template.alternatives.helpers({
   alternativeList: function () {
-    return Alternatives.find();
+    return Alternatives.find({active: 'Yes'});
   }
 });
 
