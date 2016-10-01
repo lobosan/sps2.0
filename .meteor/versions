@@ -60,11 +60,9 @@ maazalik:highcharts@0.4.0
 mdg:validation-error@0.5.1
 meteor@1.2.17
 meteor-base@1.0.4
-meteorhacks:async@1.0.0
 meteorhacks:fast-render@2.16.0
 meteorhacks:inject-data@2.0.0
 meteorhacks:meteorx@1.4.1
-meteorhacks:npm@1.5.0
 meteorhacks:picker@1.0.3
 meteorhacks:ssr@2.2.0
 meteortoys:toykit@3.0.4
@@ -78,7 +76,6 @@ mongo@1.1.12
 mongo-id@1.0.5
 msavin:mongol@2.0.1
 npm-bcrypt@0.9.1
-npm-container@1.2.0
 npm-mongo@1.5.48
 observe-sequence@1.0.12
 ongoworks:security@2.0.1

@@ -10,9 +10,7 @@ check@1.2.3
 audit-argument-checks@1.0.7
 themeteorchef:jquery-validation
 twbs:bootstrap
-meteorhacks:npm
 meteorhacks:ssr
-npm-container
 ecmascript@0.5.8
 digilord:faker
 kadira:flow-router
