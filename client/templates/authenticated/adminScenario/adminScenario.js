@@ -207,7 +207,7 @@ Template.adminScenario.events({
       } else if (activeScenario.turn >= 1) {
         if (Roles.userIsInRole(activeScenario.author, 'public') && activeScenario.turn >= 3) {
           toastr.options = {"timeOut": "6000", "progressBar": true};
-          toastr.warning('Scenarios created by public users can have up to 3 turns', 'WARNING');
+          toastr.warning('Scenarios created by public users can only have up to 3 turns', 'WARNING');
         } else {
           /*** Update turn and list of guests ***/
           Scenarios.update({_id: Session.get('active_scenario')}, {$inc: {turn: 1}});

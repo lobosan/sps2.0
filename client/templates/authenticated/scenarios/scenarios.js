@@ -115,6 +115,21 @@ AutoForm.hooks({
       toastr.options = {"timeOut": "5000", "progressBar": true};
       toastr.success('The scenario has been added successfully', 'Scenario created');
     },
+    before: {
+      insert: function (doc) {
+        var scenarios = Scenarios.find({author: Meteor.userId(), scope: 'Public'});
+        if (Roles.userIsInRole(Meteor.userId(), 'public') && scenarios.count() >= 3) {
+          $('#addScenario').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+          toastr.options = {"timeOut": "6000", "progressBar": true};
+          toastr.warning('Public users can only create up to 3 public scenarios', 'WARNING');
+          return false;
+        } else {
+          return doc;
+        }
+      }
+    },
     after: {
       insert: function (error, result, template) {
         if (!error) {
