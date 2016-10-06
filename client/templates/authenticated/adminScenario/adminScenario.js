@@ -11,26 +11,23 @@ Template.adminScenario.onCreated(function () {
 });
 
 /*Template.switchery.onRendered(function () {
-  let activeObjs = Array.prototype.slice.call(document.querySelectorAll('.js-switch-obj'));
-  activeObjs.forEach(function (html) {
-    new Switchery(html, {size: 'small'});
-  });
+ let activeObjs = Array.prototype.slice.call(document.querySelectorAll('.js-switch-obj'));
+ activeObjs.forEach(function (html) {
+ new Switchery(html, {size: 'small'});
+ });
 
-  let activeAlts = Array.prototype.slice.call(document.querySelectorAll('.js-switch-alt'));
-  activeAlts.forEach(function (html) {
-    new Switchery(html, {size: 'small'});
-  });
-});*/
+ let activeAlts = Array.prototype.slice.call(document.querySelectorAll('.js-switch-alt'));
+ activeAlts.forEach(function (html) {
+ new Switchery(html, {size: 'small'});
+ });
+ });*/
 
 Template.adminScenario.helpers({
-  scenarioDetailsAdmin: function () {
-    return Scenarios.findOne({_id: Session.get('active_scenario')});
-  },
   objectivesScenarioAdmin: function () {
-    return Objectives.find();
+    return Objectives.find({scenario_id: Session.get('active_scenario')}, {sort: {turn: 1, name: 1}});
   },
   alternativesScenarioAdmin: function () {
-    return Alternatives.find();
+    return Alternatives.find({scenario_id: Session.get('active_scenario')}, {sort: {turn: 1, name: 1}});
   },
   guestsScenarioAdmin: function () {
     var activeScenario = Scenarios.findOne({_id: Session.get('active_scenario')});
@@ -208,125 +205,130 @@ Template.adminScenario.events({
           }
         );
       } else if (activeScenario.turn >= 1) {
-        /*** Update turn and list of guests ***/
-        Scenarios.update({_id: Session.get('active_scenario')}, {$inc: {turn: 1}});
+        if (Roles.userIsInRole(activeScenario.author, 'public') && activeScenario.turn >= 3) {
+          toastr.options = {"timeOut": "6000", "progressBar": true};
+          toastr.warning('Scenarios created by public users can have up to 3 turns', 'WARNING');
+        } else {
+          /*** Update turn and list of guests ***/
+          Scenarios.update({_id: Session.get('active_scenario')}, {$inc: {turn: 1}});
 
-        var guests_ids = [];
-        _.each(activeScenario.guests, function (guest) {
-          guests_ids.push(guest.userid);
-        });
+          var guests_ids = [];
+          _.each(activeScenario.guests, function (guest) {
+            guests_ids.push(guest.userid);
+          });
 
-        Meteor.call('notifyNextTurn', activeScenario.name, activeScenario.description, guests_ids, function (error, response) {
-          if (error) {
-            toastr.options = {"timeOut": "6000", "progressBar": true};
-            toastr.error('Uh oh, something went wrong', 'ERROR');
-          } else {
-            toastr.options = {"timeOut": "6000", "progressBar": true};
-            toastr.success('All guests have been notified by email about the next turn', 'Notifications sent');
-          }
-        });
-
-        _.each(guests_ids, function (guest_id) {
-          Meteor.call('updateCompletedValues', Session.get('active_scenario'), guest_id, 'No');
-        });
-        /*** End update turn and list of guests ***/
-
-        var previousTurn = activeScenario.turn;
-        var objsPreviousTurns = Objectives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}, active: 'Yes'}).count();
-        var altsPreviousTurns = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}, active: 'Yes'}).count();
-        var turn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
-        var objsNextTurn = Objectives.find({scenario_id: Session.get('active_scenario'), turn: turn, active: 'Yes'}).count();
-        var altsNextTurn = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: turn, active: 'Yes'}).count();
-
-        /*** Connectivity Matrix Other Turns ***/
-        var conMatrix = ConnectivityMatrix.find({scenario_id: Session.get('active_scenario'), turn: previousTurn}, {sort: {created_at: 1}}).fetch();
-
-        var order = 1;
-        var created_at = ConnectivityMatrix.findOne({scenario_id: Session.get('active_scenario')}, {sort: {created_at: -1}}).created_at + 1;
-
-        for (var c = 0; c < conMatrix.length; c++) {
-          conMatrix[c].turn++;
-          conMatrix[c].created_at = created_at;
-          conMatrix[c].order = order;
-          delete conMatrix[c]['_id'];
-          if (objsNextTurn > 0) {
-            var conNewDim = objsPreviousTurns + objsNextTurn;
-            for (j = objsPreviousTurns + 1; j <= conNewDim; j++) {
-              conMatrix[c]['o' + j] = 0;
+          Meteor.call('notifyNextTurn', activeScenario.name, activeScenario.description, guests_ids, function (error, response) {
+            if (error) {
+              toastr.options = {"timeOut": "6000", "progressBar": true};
+              toastr.error('Uh oh, something went wrong', 'ERROR');
+            } else {
+              toastr.options = {"timeOut": "6000", "progressBar": true};
+              toastr.success('All guests have been notified by email about the next turn', 'Notifications sent');
             }
-          }
-          ConnectivityMatrix.insert(conMatrix[c]);
-          order++;
-          created_at++;
-          if ((c + 1) % objsPreviousTurns == 0) {
-            for (var k = 0; k < objsNextTurn; k++) {
-              var temp = {};
-              temp['scenario_id'] = conMatrix[c]['scenario_id'];
-              temp['turn'] = conMatrix[c]['turn'];
-              temp['user_id'] = conMatrix[c]['user_id'];
-              temp['created_at'] = created_at;
-              temp['order'] = order;
-              for (var m = 1; m <= conNewDim; m++) {
-                if (order == m) {
-                  temp['o' + m] = 'x';
-                } else {
-                  temp['o' + m] = 0;
+          });
+
+          _.each(guests_ids, function (guest_id) {
+            Meteor.call('updateCompletedValues', Session.get('active_scenario'), guest_id, 'No');
+          });
+          /*** End update turn and list of guests ***/
+
+          var previousTurn = activeScenario.turn;
+          var objsPreviousTurns = Objectives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}, active: 'Yes'}).count();
+          var altsPreviousTurns = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: {$lte: previousTurn}, active: 'Yes'}).count();
+          var turn = Scenarios.findOne({_id: Session.get('active_scenario')}).turn;
+          var objsNextTurn = Objectives.find({scenario_id: Session.get('active_scenario'), turn: turn, active: 'Yes'}).count();
+          var altsNextTurn = Alternatives.find({scenario_id: Session.get('active_scenario'), turn: turn, active: 'Yes'}).count();
+
+          /*** Connectivity Matrix Other Turns ***/
+          var conMatrix = ConnectivityMatrix.find({scenario_id: Session.get('active_scenario'), turn: previousTurn}, {sort: {created_at: 1}}).fetch();
+
+          var order = 1;
+          var created_at = ConnectivityMatrix.findOne({scenario_id: Session.get('active_scenario')}, {sort: {created_at: -1}}).created_at + 1;
+
+          for (var c = 0; c < conMatrix.length; c++) {
+            conMatrix[c].turn++;
+            conMatrix[c].created_at = created_at;
+            conMatrix[c].order = order;
+            delete conMatrix[c]['_id'];
+            if (objsNextTurn > 0) {
+              var conNewDim = objsPreviousTurns + objsNextTurn;
+              for (j = objsPreviousTurns + 1; j <= conNewDim; j++) {
+                conMatrix[c]['o' + j] = 0;
+              }
+            }
+            ConnectivityMatrix.insert(conMatrix[c]);
+            order++;
+            created_at++;
+            if ((c + 1) % objsPreviousTurns == 0) {
+              for (var k = 0; k < objsNextTurn; k++) {
+                var temp = {};
+                temp['scenario_id'] = conMatrix[c]['scenario_id'];
+                temp['turn'] = conMatrix[c]['turn'];
+                temp['user_id'] = conMatrix[c]['user_id'];
+                temp['created_at'] = created_at;
+                temp['order'] = order;
+                for (var m = 1; m <= conNewDim; m++) {
+                  if (order == m) {
+                    temp['o' + m] = 'x';
+                  } else {
+                    temp['o' + m] = 0;
+                  }
                 }
+                ConnectivityMatrix.insert(temp);
+                order++;
+                created_at++;
               }
-              ConnectivityMatrix.insert(temp);
-              order++;
-              created_at++;
-            }
-            order = 1;
-          }
-        }
-        /*** End Connectivity Matrix Other Turns ***/
-
-        /*** Probability Matrix Other Turns ***/
-        var probMatrix = ProbabilityMatrix.find({scenario_id: Session.get('active_scenario'), turn: previousTurn}, {sort: {created_at: 1}}).fetch();
-
-        order = 1;
-        created_at = ProbabilityMatrix.findOne({scenario_id: Session.get('active_scenario')}, {sort: {created_at: -1}}).created_at + 1;
-
-        for (c = 0; c < probMatrix.length; c++) {
-          probMatrix[c].turn++;
-          probMatrix[c].created_at = created_at;
-          probMatrix[c].order = order;
-          delete probMatrix[c]['_id'];
-          if (objsNextTurn > 0) {
-            var probNewDim = objsPreviousTurns + objsNextTurn;
-            for (j = objsPreviousTurns + 1; j <= probNewDim; j++) {
-              probMatrix[c]['p' + j] = 0;
+              order = 1;
             }
           }
-          ProbabilityMatrix.insert(probMatrix[c]);
-          order++;
-          created_at++;
+          /*** End Connectivity Matrix Other Turns ***/
 
-          if ((c + 1) % altsPreviousTurns == 0 && altsNextTurn > 0) {
-            for (k = 0; k < altsNextTurn; k++) {
-              probNewDim = objsPreviousTurns + objsNextTurn;
-              temp = {};
-              temp['scenario_id'] = probMatrix[c]['scenario_id'];
-              temp['turn'] = probMatrix[c]['turn'];
-              temp['user_id'] = probMatrix[c]['user_id'];
-              temp['created_at'] = created_at;
-              temp['order'] = order;
-              for (m = 1; m <= probNewDim; m++) {
-                temp['p' + m] = 0;
+          /*** Probability Matrix Other Turns ***/
+          var probMatrix = ProbabilityMatrix.find({scenario_id: Session.get('active_scenario'), turn: previousTurn}, {sort: {created_at: 1}}).fetch();
+
+          order = 1;
+          created_at = ProbabilityMatrix.findOne({scenario_id: Session.get('active_scenario')}, {sort: {created_at: -1}}).created_at + 1;
+
+          for (c = 0; c < probMatrix.length; c++) {
+            probMatrix[c].turn++;
+            probMatrix[c].created_at = created_at;
+            probMatrix[c].order = order;
+            delete probMatrix[c]['_id'];
+            if (objsNextTurn > 0) {
+              var probNewDim = objsPreviousTurns + objsNextTurn;
+              for (j = objsPreviousTurns + 1; j <= probNewDim; j++) {
+                probMatrix[c]['p' + j] = 0;
               }
-              ProbabilityMatrix.insert(temp);
-              order++;
-              created_at++;
             }
-            order = 1;
-          } else if ((c + 1) % altsPreviousTurns == 0) {
-            order = 1;
-          }
-        }
-        /*** End Probability Matrix Other Turns ***/
+            ProbabilityMatrix.insert(probMatrix[c]);
+            order++;
+            created_at++;
 
-        FlowRouter.go('connectivity');
+            if ((c + 1) % altsPreviousTurns == 0 && altsNextTurn > 0) {
+              for (k = 0; k < altsNextTurn; k++) {
+                probNewDim = objsPreviousTurns + objsNextTurn;
+                temp = {};
+                temp['scenario_id'] = probMatrix[c]['scenario_id'];
+                temp['turn'] = probMatrix[c]['turn'];
+                temp['user_id'] = probMatrix[c]['user_id'];
+                temp['created_at'] = created_at;
+                temp['order'] = order;
+                for (m = 1; m <= probNewDim; m++) {
+                  temp['p' + m] = 0;
+                }
+                ProbabilityMatrix.insert(temp);
+                order++;
+                created_at++;
+              }
+              order = 1;
+            } else if ((c + 1) % altsPreviousTurns == 0) {
+              order = 1;
+            }
+          }
+          /*** End Probability Matrix Other Turns ***/
+
+          FlowRouter.go('connectivity');
+        }
       }
     }
   },

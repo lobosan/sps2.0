@@ -1,129 +1,131 @@
 <template name="adminScenario">
-	{{#if isInRole 'admin, private, public'}}
-		{{#if Template.subscriptionsReady}}
-			{{> defaultTitle currentPage="Admin Scenario"}}
+  {{#if isInRole 'admin, private, public'}}
+    {{#if Template.subscriptionsReady}}
+      {{> defaultTitle currentPage="Admin Scenario"}}
 
-			<div class="bottom-buffer">
-				{{#if $neq scenarioDetailsAdmin.state "Finished"}}
-					<button id="next-turn" type="button" class="btn btn-success">
-						{{#if $eq scenarioDetailsAdmin.turn 0}}
-							<i class="glyphicon glyphicon-play"></i> Start Evaluation
-						{{else}}
-							<i class="glyphicon glyphicon-play"></i> Next Turn
-						{{/if}}
-					</button>
-				{{/if}}
+      <div class="bottom-buffer">
+        {{#if $neq activeScenario.state 'Finished'}}
+          <button id="next-turn" type="button" class="btn btn-success">
+            {{#if $eq activeScenario.turn 0}}
+              <i class="glyphicon glyphicon-play"></i> Start Evaluation
+            {{else}}
+              <i class="glyphicon glyphicon-play"></i> Next Turn
+            {{/if}}
+          </button>
+        {{/if}}
 
-				{{#if $eq scenarioDetailsAdmin.state "Finished"}}
-					<button type="button" class="btn btn-warning" disabled><i class="fa fa-exclamation-circle"></i> Scenario Finished</button>
-				{{else}}
-					<button id="finish-evaluation" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-stop"></i> Finish Evaluation</button>
-				{{/if}}
+        {{#if $eq activeScenario.state 'Finished'}}
+          <button type="button" class="btn btn-warning" disabled><i class="fa fa-exclamation-circle"></i> Scenario Finished</button>
+        {{else}}
+          <button id="finish-evaluation" type="button" class="btn btn-warning"><i class="glyphicon glyphicon-stop"></i> Finish Evaluation</button>
+        {{/if}}
 
-				<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
-					<i class="fa fa-angle-double-left"></i> Invite Actors
-				</a>
-			</div>
+        {{#if $eq activeScenario.state 'Open'}}
+          <a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
+            <i class="fa fa-angle-double-left"></i> Invite Actors
+          </a>
+        {{/if}}
+      </div>
 
-			<div>
-				<h3>Details</h3>
-				<p><b>Name: </b>{{scenarioDetailsAdmin.name}}</p>
-				<p class="top-buffer text-justify"><b>Description: </b>{{scenarioDetailsAdmin.description}}</p>
-				<p class="top-buffer"><b>State: </b>{{scenarioDetailsAdmin.state}}</p>
-				<p class="top-buffer"><b>Scope: </b>{{scenarioDetailsAdmin.scope}}</p>
-				<p class="top-buffer"><b>Turn: #</b>{{scenarioDetailsAdmin.turn}}</p>
-			</div>
+      <div>
+        <h3>Details</h3>
+        <p><b>Name: </b>{{activeScenario.name}}</p>
+        <p class="top-buffer text-justify"><b>Description: </b>{{activeScenario.description}}</p>
+        <p class="top-buffer"><b>State: </b>{{activeScenario.state}}</p>
+        <p class="top-buffer"><b>Scope: </b>{{activeScenario.scope}}</p>
+        <p class="top-buffer"><b>Turn: #</b>{{activeScenario.turn}}</p>
+      </div>
 
-			<div>
-				<h3>Participants</h3>
-				<table class="table table-bordered table-striped">
-					<thead>
-					<tr>
-						<th>Name</th>
-						<th>Email</th>
-						<th>Evaluation Confirmed</th>
-					</tr>
-					</thead>
-					<tbody>
-					{{#each guestsScenarioAdmin}}
-						<tr>
-							<td class="col-md-5">{{username}}</td>
-							<td class="col-md-5">
-								<a href="mailto:{{email}}?subject=SPS%20Participation%20Reminder&amp;body=Please%20confirm%20your%20evaluation%20in%20order%20to%20proceed%20with%20the%20next%20turn%20of%20the%20scenario" target="_blank">
-									{{email}}
-								</a>
-							</td>
-							<td class="col-md-2">{{complete_values}}</td>
-						</tr>
-					{{/each}}
-					</tbody>
-				</table>
-			</div>
+      <div>
+        <h3>Participants</h3>
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Evaluation Confirmed</th>
+          </tr>
+          </thead>
+          <tbody>
+          {{#each guestsScenarioAdmin}}
+            <tr>
+              <td class="col-md-5">{{username}}</td>
+              <td class="col-md-5">
+                <a href="mailto:{{email}}?subject=SPS%20Participation%20Reminder&amp;body=Please%20confirm%20your%20evaluation%20in%20order%20to%20proceed%20with%20the%20next%20turn%20of%20the%20scenario" target="_blank">
+                  {{email}}
+                </a>
+              </td>
+              <td class="col-md-2">{{complete_values}}</td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
 
-			<div>
-				<h3>Objectives</h3>
-				<table class="table table-bordered table-striped">
-					<thead>
-					<tr>
-						<th>Name</th>
-						<th>Description</th>
-						<th>Turn</th>
-						<th>Active</th>
-					</tr>
-					</thead>
-					<tbody>
-					{{#each objectivesScenarioAdmin}}
-						<tr>
-							<td class="col-md-5">{{name}}</td>
-							<td class="col-md-5">{{description}}</td>
-							<td class="col-md-1">{{turn}}</td>
-							<td class="col-md-1">
-								{{#if $gt turn scenarioDetailsAdmin.turn}}
-									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} class="js-switch-obj"/>
-								{{else}}
-									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} disabled class="js-switch-obj"/>
-								{{/if}}
-							</td>
-						</tr>
-					{{/each}}
-					</tbody>
-				</table>
-			</div>
+      <div>
+        <h3>Objectives</h3>
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Turn</th>
+            <th>Active</th>
+          </tr>
+          </thead>
+          <tbody>
+          {{#each objectivesScenarioAdmin}}
+            <tr>
+              <td class="col-md-5">{{name}}</td>
+              <td class="col-md-5">{{description}}</td>
+              <td class="col-md-1">{{turn}}</td>
+              <td class="col-md-1">
+                {{#if $gt turn activeScenario.turn}}
+                  <input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} class="js-switch-obj"/>
+                {{else}}
+                  <input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} disabled class="js-switch-obj"/>
+                {{/if}}
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
 
-			<div>
-				<h3>Alternatives</h3>
-				<table class="table table-bordered table-striped">
-					<thead>
-					<tr>
-						<th>Name</th>
-						<th>Description</th>
-						<th>Turn</th>
-						<th>Active</th>
-					</tr>
-					</thead>
-					<tbody>
-					{{#each alternativesScenarioAdmin}}
-						<tr>
-							<td class="col-md-5">{{name}}</td>
-							<td class="col-md-5">{{description}}</td>
-							<td class="col-md-1">{{turn}}</td>
-							<td class="col-md-1">
-								{{#if $gt turn scenarioDetailsAdmin.turn}}
-									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} class="js-switch-alt"/>
-								{{else}}
-									<input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} disabled class="js-switch-alt"/>
-								{{/if}}
-							</td>
-						</tr>
-					{{/each}}
-					</tbody>
-				</table>
-			</div>
-			<!--{{> switchery}}-->
-		{{else}}
-			{{> spinner}}
-		{{/if}}
-	{{/if}}
+      <div>
+        <h3>Alternatives</h3>
+        <table class="table table-bordered table-striped">
+          <thead>
+          <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Turn</th>
+            <th>Active</th>
+          </tr>
+          </thead>
+          <tbody>
+          {{#each alternativesScenarioAdmin}}
+            <tr>
+              <td class="col-md-5">{{name}}</td>
+              <td class="col-md-5">{{description}}</td>
+              <td class="col-md-1">{{turn}}</td>
+              <td class="col-md-1">
+                {{#if $gt turn activeScenario.turn}}
+                  <input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} class="js-switch-alt"/>
+                {{else}}
+                  <input type="checkbox" name="active-obj" value="{{_id}}" {{isChecked active 'Yes'}} disabled class="js-switch-alt"/>
+                {{/if}}
+              </td>
+            </tr>
+          {{/each}}
+          </tbody>
+        </table>
+      </div>
+      <!--{{> switchery}}-->
+    {{else}}
+      {{> spinner}}
+    {{/if}}
+  {{/if}}
 </template>
 
 <template name="switchery">

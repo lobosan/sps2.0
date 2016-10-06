@@ -4,6 +4,7 @@ Template.default.onCreated(function () {
   this.autorun(() => {
     if (this.activeScenario()) {
       this.subscribe('activeScenario', this.activeScenario());
+      this.subscribe('author', this.activeScenario());
     }
   });
 });

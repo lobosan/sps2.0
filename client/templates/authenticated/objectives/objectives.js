@@ -26,3 +26,24 @@ Template.insertObjectiveForm.helpers({
     };
   }
 });
+
+AutoForm.hooks({
+  insertObjectiveForm: {
+    before: {
+      insert: function (doc) {
+        var objectives = Objectives.find({scenario_id: doc.scenario_id}).count();
+        var scenario = Scenarios.findOne({_id: doc.scenario_id});
+        if (Roles.userIsInRole(scenario.author, 'public') && objectives >= 6) {
+          $('#addObjective').modal('hide');
+          $('body').removeClass('modal-open');
+          $('.modal-backdrop').remove();
+          toastr.options = {"timeOut": "6000", "progressBar": true};
+          toastr.warning('Scenarios created by public users can only have up to 6 objectives', 'WARNING');
+          return false;
+        } else {
+          return doc;
+        }
+      }
+    }
+  }
+});

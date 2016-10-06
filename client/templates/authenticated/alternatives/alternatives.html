@@ -1,71 +1,73 @@
 <template name="alternatives">
-	{{#if isInRole 'admin, private, public'}}
-		{{#if Template.subscriptionsReady}}
-			{{> defaultTitle currentPage="Alternatives"}}
-			<div class="bottom-buffer">
-				<button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAlternative">
-					<i class="fa fa-plus-circle"></i> Add Alternatives
-				</button>
+  {{#if isInRole 'admin, private, public'}}
+    {{#if Template.subscriptionsReady}}
+      {{> defaultTitle currentPage="Alternatives"}}
+      <div class="bottom-buffer">
+        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addAlternative">
+          <i class="fa fa-plus-circle"></i> Add Alternatives
+        </button>
 
-				<a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
-					Invite Actors <i class="fa fa-angle-double-right"></i>
-				</a>
-				<a class="btn btn-default pull-right right-buffer" href="{{pathFor 'objectives'}}">
-					<i class="fa fa-angle-double-left"></i> Add Objectives
-				</a>
-			</div>
+        {{#if $eq activeScenario.state 'Open'}}
+          <a class="btn btn-default pull-right" href="{{pathFor 'contacts'}}">
+            Invite Actors <i class="fa fa-angle-double-right"></i>
+          </a>
+        {{/if}}
+        <a class="btn btn-default pull-right right-buffer" href="{{pathFor 'objectives'}}">
+          <i class="fa fa-angle-double-left"></i> Add Objectives
+        </a>
+      </div>
 
-			<table class="table table-bordered table-striped table-hover top-buffer">
-				<thead>
-				<tr>
-					<th>Name</th>
-					<th>Description</th>
-					<th>Turn</th>
-				</tr>
-				</thead>
-				<tbody>
-				{{#each alternativeList}}
-					<tr class="objectiveRow">
-						<td class="col-md-5">{{name}}</td>
-						<td class="col-md-6">{{description}}</td>
-						<td class="col-md-1">{{turn}}</td>
-					</tr>
-				{{/each}}
-				</tbody>
-			</table>
+      <table class="table table-bordered table-striped table-hover top-buffer">
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Description</th>
+          <th>Turn</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each alternativeList}}
+          <tr class="objectiveRow">
+            <td class="col-md-5">{{name}}</td>
+            <td class="col-md-6">{{description}}</td>
+            <td class="col-md-1">{{turn}}</td>
+          </tr>
+        {{/each}}
+        </tbody>
+      </table>
 
-			{{>addAlternative}}
-		{{else}}
-			{{> spinner}}
-		{{/if}}
-	{{/if}}
+      {{>addAlternative}}
+    {{else}}
+      {{> spinner}}
+    {{/if}}
+  {{/if}}
 </template>
 
 <template name="addAlternative">
-	<div id="addAlternative" class="modal fade" tabindex="-1">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button type="button" class="close" data-dismiss="modal">
-						<span aria-hidden="true">&times;</span>
-						<span class="sr-only">Close</span>
-					</button>
-					<h3>Add Alternative</h3>
-				</div>
-				<div class="modal-body">
-					{{>insertAlternativeForm}}
-				</div>
-			</div>
-		</div>
-	</div>
+  <div id="addAlternative" class="modal fade" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">
+            <span aria-hidden="true">&times;</span>
+            <span class="sr-only">Close</span>
+          </button>
+          <h3>Add Alternative</h3>
+        </div>
+        <div class="modal-body">
+          {{>insertAlternativeForm}}
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <template name="insertAlternativeForm">
-	{{#autoForm collection='Alternatives' id='insertAlternativeForm' type='insert' doc=defaultValues}}
-		{{> afQuickField name='name'}}
-		{{> afQuickField name='description'}}
-		{{> afQuickField name='scenario_id'}}
-		{{> afQuickField name='turn'}}
-		<button type='submit' class='btn btn-success bottom-buffer'>Save</button>
-	{{/autoForm}}
+  {{#autoForm collection='Alternatives' id='insertAlternativeForm' type='insert' doc=defaultValues}}
+    {{> afQuickField name='name'}}
+    {{> afQuickField name='description'}}
+    {{> afQuickField name='scenario_id'}}
+    {{> afQuickField name='turn'}}
+    <button type='submit' class='btn btn-success bottom-buffer'>Save</button>
+  {{/autoForm}}
 </template>

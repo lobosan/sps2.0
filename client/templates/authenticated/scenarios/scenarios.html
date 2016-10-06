@@ -1,81 +1,79 @@
 <template name="scenarios">
-	{{#if isInRole 'admin, private, public'}}
-		{{#if Template.subscriptionsReady}}
-			{{>addScenario}}
+  {{#if isInRole 'admin, private, public'}}
+    {{#if Template.subscriptionsReady}}
+      {{>addScenario}}
 
-			<div class="row page-header page-header-sps">
-				<div class="pull-left">
-					<h2>Scenarios</h2>
-				</div>
-				<div class="pull-right back-next-btn">
-					{{#if isActiveScenario}}
-						<span class="legend-active-scenario" title="Active Scenario">
+      <div class="row page-header page-header-sps">
+        <div class="pull-left">
+          <h2>Scenarios</h2>
+        </div>
+        <div class="pull-right back-next-btn">
+          {{#if isActiveScenario}}
+            <span class="legend-active-scenario" title="Active Scenario">
 							<i class="active-scenario fa fa-toggle-on"></i> {{activeScenario.name}}
-							{{#if $neq activeScenario.turn 0}} - Turn: #{{activeScenario.turn}}{{/if}}
+              {{#if $neq activeScenario.turn 0}} - Turn: #{{activeScenario.turn}}{{/if}}
 						</span>
-					{{/if}}
-				</div>
-			</div>
+          {{/if}}
+        </div>
+      </div>
 
-			<div class="clearfix">
-				<h3 class="pull-left bottom-buffer">Current scenarios</h3>
-				{{#if isInRole 'admin,private'}}
-					<button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#addScenario">
-						<i class="fa fa-plus-circle"></i> Add Scenario
-					</button>
-				{{/if}}
-			</div>
-			{{> tabular table=TabularTables.CurrentScenarios class="table table-striped table-bordered table-condensed"}}
+      <div class="clearfix">
+        <h3 class="pull-left bottom-buffer">Current scenarios</h3>
+        <button type="button" class="btn btn-success pull-right" data-toggle="modal" data-target="#addScenario">
+          <i class="fa fa-plus-circle"></i> Add Scenario
+        </button>
+      </div>
+      {{> tabular table=TabularTables.CurrentScenarios class="table table-striped table-bordered table-condensed"}}
 
-			<h3 class="bottom-buffer">Public scenarios</h3>
-			{{> tabular table=TabularTables.PublicScenarios class="table table-striped table-bordered table-condensed"}}
+      <h3 class="bottom-buffer">Public scenarios</h3>
+      {{> tabular table=TabularTables.PublicScenarios class="table table-striped table-bordered table-condensed"}}
 
-			<h3 class="bottom-buffer">Private scenarios</h3>
-			{{> tabular table=TabularTables.PrivateScenarios class="table table-striped table-bordered table-condensed"}}
-		{{else}}
-			{{> spinner}}
-		{{/if}}
-	{{/if}}
+      <h3 class="bottom-buffer">Private scenarios</h3>
+      {{> tabular table=TabularTables.PrivateScenarios class="table table-striped table-bordered table-condensed"}}
+    {{else}}
+      {{> spinner}}
+    {{/if}}
+  {{/if}}
 </template>
 
 <template name="joinScenario">
-	{{#if isAuthor}}Owner{{/if}}
-	{{#if isGuest}}
-		{{#if $eq state "Open"}}
-			<button class="btn btn-default btn-action-sps leave-scenario">LEAVE</button>
-		{{else}}
-			Joined
-		{{/if}}
-	{{/if}}
-	{{#unless isJoined}}
-		{{#if $eq state "Open"}}
-			<button class="btn btn-default btn-action-sps join-scenario">JOIN</button>
-		{{else}}
-			-
-		{{/if}}
-	{{/unless}}
+  {{#if isAuthor}}Owner{{/if}}
+  {{#if isGuest}}
+    {{#if $eq state 'Open'}}
+      <button class="btn btn-default btn-action-sps leave-scenario">LEAVE</button>
+    {{else}}
+      Joined
+    {{/if}}
+  {{/if}}
+  {{#unless isJoined}}
+    {{#if $eq state 'Open'}}
+      <button class="btn btn-default btn-action-sps join-scenario">JOIN</button>
+    {{else}}
+      -
+    {{/if}}
+  {{/unless}}
 </template>
 
 <template name="evaluateScenario">
-	{{#if $eq state "Started"}}
-		{{#if isJoined}}
-			<a id="btn-connectivity-matrix" class="btn btn-default btn-action-sps fa fa-th evaluate" href="{{pathFor 'connectivity'}}"></a>
-		{{else}}
-			-
-		{{/if}}
-	{{else}}
-		-
-	{{/if}}
+  {{#if $eq state 'Started'}}
+    {{#if isJoined}}
+      <a id="btn-connectivity-matrix" class="btn btn-default btn-action-sps fa fa-th evaluate" href="{{pathFor 'connectivity'}}"></a>
+    {{else}}
+      -
+    {{/if}}
+  {{else}}
+    -
+  {{/if}}
 </template>
 
 <template name="resultsScenario">
-	{{#if $neq state "Open"}}
-		{{#if isJoined}}
-			<a class="btn btn-default btn-action-sps fa fa-bar-chart results" href="{{pathFor 'results'}}"></a>
-		{{else}}
-			-
-		{{/if}}
-	{{else}}
-		-
-	{{/if}}
+  {{#if $neq state 'Open'}}
+    {{#if isJoined}}
+      <a class="btn btn-default btn-action-sps fa fa-bar-chart results" href="{{pathFor 'results'}}"></a>
+    {{else}}
+      -
+    {{/if}}
+  {{else}}
+    -
+  {{/if}}
 </template>

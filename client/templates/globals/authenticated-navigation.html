@@ -1,29 +1,31 @@
 <template name="authenticatedNavigation">
-	<ul class="nav navbar-nav navbar-right">
-		{{#if isInRole 'admin, public, private'}}
-			<li class="{{currentRoute 'scenarios'}}"><a href="{{pathFor 'scenarios'}}"><i class="glyphicon glyphicon-road"></i> Scenarios</a></li>
-			{{#if isActiveScenario}}
-				<li class="{{currentRoute 'objectives'}}"><a href="{{pathFor 'objectives'}}"><i class="glyphicon glyphicon-record"></i> Objectives</a></li>
-				<li class="{{currentRoute 'alternatives'}}"><a href="{{pathFor 'alternatives'}}"><i class="glyphicon glyphicon-transfer"></i> Alternatives</a></li>
-				<li class="{{currentRoute 'contacts'}}"><a href="{{pathFor 'contacts'}}"><i class="glyphicon glyphicon-envelope"></i> Contacts</a></li>
-			{{/if}}
-			{{#if isScenarioAuthor}}
-				<li class="{{currentRoute 'adminScenario'}}"><a href="{{pathFor 'adminScenario'}}"><i class="glyphicon glyphicon-flag"></i> Admin</a></li>
-			{{/if}}
-			{{#if $eq activeScenario.state "Started"}}
-				<li class="{{currentRoute 'connectivity'}}"><a href="{{pathFor 'connectivity'}}"><i class="glyphicon glyphicon-th"></i> Evaluation</a></li>
-			{{/if}}
-		{{/if}}
+  <ul class="nav navbar-nav navbar-right">
+    {{#if isInRole 'admin, public, private'}}
+      <li class="{{currentRoute 'scenarios'}}"><a href="{{pathFor 'scenarios'}}"><i class="glyphicon glyphicon-road"></i> Scenarios</a></li>
+      {{#if isActiveScenario}}
+        <li class="{{currentRoute 'objectives'}}"><a href="{{pathFor 'objectives'}}"><i class="glyphicon glyphicon-record"></i> Objectives</a></li>
+        <li class="{{currentRoute 'alternatives'}}"><a href="{{pathFor 'alternatives'}}"><i class="glyphicon glyphicon-transfer"></i> Alternatives</a></li>
+        {{#if $eq activeScenario.state 'Open'}}
+          <li class="{{currentRoute 'contacts'}}"><a href="{{pathFor 'contacts'}}"><i class="glyphicon glyphicon-envelope"></i> Contacts</a></li>
+        {{/if}}
+      {{/if}}
+      {{#if isScenarioAuthor}}
+        <li class="{{currentRoute 'adminScenario'}}"><a href="{{pathFor 'adminScenario'}}"><i class="glyphicon glyphicon-flag"></i> Admin</a></li>
+      {{/if}}
+      {{#if $eq activeScenario.state 'Started'}}
+        <li class="{{currentRoute 'connectivity'}}"><a href="{{pathFor 'connectivity'}}"><i class="glyphicon glyphicon-th"></i> Evaluation</a></li>
+      {{/if}}
+    {{/if}}
 
-		{{#if isInRole 'admin'}}
-			<li class="{{currentRoute 'users'}}"><a href="{{pathFor 'users'}}"><i class="glyphicon glyphicon-user"></i> Users</a></li>
-		{{/if}}
+    {{#if isInRole 'admin'}}
+      <li class="{{currentRoute 'users'}}"><a href="{{pathFor 'users'}}"><i class="glyphicon glyphicon-user"></i> Users</a></li>
+    {{/if}}
 
-		<li class="dropdown">
-			<a href="#" class="dropdown-toggle" data-toggle="dropdown">{{currentUser.profile.name}} <span class="caret"></span></a>
-			<ul class="dropdown-menu" role="menu">
-				<li class="logout"><a href="#">Logout</a></li>
-			</ul>
-		</li>
-	</ul>
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown">{{currentUser.profile.name}} <span class="caret"></span></a>
+      <ul class="dropdown-menu" role="menu">
+        <li class="logout"><a href="#">Logout</a></li>
+      </ul>
+    </li>
+  </ul>
 </template>
