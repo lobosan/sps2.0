@@ -60,8 +60,9 @@ Template.contacts.events({
     }
 
     var scenario = Scenarios.findOne({_id: Session.get('active_scenario')});
+    var participants = scenario.guests.length;
 
-    let domain = Meteor.settings.public.domain;
+    var domain = Meteor.settings.public.domain;
 
     var html = "<h1>Scenario Planning System</h1>"
       + "You've been invited to participate in the scenario: " + scenario.name + "<br><br>"
@@ -69,21 +70,27 @@ Template.contacts.events({
       + "Go to the platform to <a href='" + domain + "/scenarios'>participate</a>";
 
     if (emails.length >= 1) {
-      Meteor.call("sendEmail",
-        emails,
-        "SPS invitation",
-        html,
-        function (err) {
-          if (err) {
-            toastr.options = {"timeOut": "6000", "progressBar": true};
-            toastr.error('Uh oh, something went wrong', 'ERROR');
-          } else {
-            Meteor.call('scenarioHasActors', Session.get('active_scenario'), userids);
-            toastr.options = {"timeOut": "6000", "progressBar": true};
-            toastr.success('The invitations to participate in the scenario have been sent to the guests', 'Invitations sent');
+      var allowedParticipants = emails.length + participants;
+      if (Roles.userIsInRole(scenario.author, 'public') && allowedParticipants > 3) {
+        toastr.options = {"timeOut": "6000", "progressBar": true};
+        toastr.warning('Scenarios created by public users can only have up to 3 participants', 'WARNING');
+      } else {
+        Meteor.call("sendEmail",
+          emails,
+          "SPS invitation",
+          html,
+          function (err) {
+            if (err) {
+              toastr.options = {"timeOut": "6000", "progressBar": true};
+              toastr.error('Uh oh, something went wrong', 'ERROR');
+            } else {
+              Meteor.call('scenarioHasActors', Session.get('active_scenario'), userids);
+              toastr.options = {"timeOut": "6000", "progressBar": true};
+              toastr.success('The invitations to participate in the scenario have been sent to the guests', 'Invitations sent');
+            }
           }
-        }
-      );
+        );
+      }
     }
   },
   'click .revoke-invite': function (event, template) {

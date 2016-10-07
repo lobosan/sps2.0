@@ -25,7 +25,6 @@ Meteor.methods({
   scenarioHasActors: function (active_scenario, userids) {
     check(active_scenario, String);
     check(userids, [String]);
-    //Scenarios.update({_id: active_scenario}, {$set: {guests: userids}});
     _.each(userids, function (userid) {
       Scenarios.update({_id: active_scenario}, {
         $push: {
@@ -35,13 +34,6 @@ Meteor.methods({
           }
         }
       });
-      //Insert a new document if no match found
-      /*Scenarios.update({_id: active_scenario}, {
-       $set: {
-       'guests.$.userid': userid,
-       'guests.$.complete_values': 'No'
-       }
-       }, {upsert: true}, {validate: false});*/
     });
   }
 });
