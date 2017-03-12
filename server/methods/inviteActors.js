@@ -1,8 +1,8 @@
 Meteor.methods({
-  sendEmail: function (to, subject, html) {
+  sendEmail: function (to, subject, scenario) {
     check(to, [String]);
     check(subject, String);
-    check(html, String);
+    check(scenario, Object);
 
     // Let other method calls from the same client start running,
     // without waiting for the email sending to complete.
@@ -15,9 +15,12 @@ Meteor.methods({
     // and here is where you can throttle the number of emails this user
     // is allowed to send per day
 
+    SSR.compileTemplate('participate', Assets.getText('email/templates/participate.html'));
+    let html = SSR.render('participate', {scenario: scenario.name, description: scenario.description, domain: Meteor.settings.public.domain});
+
     Email.send({
       to: to,
-      from: Meteor.user().emails[0].address,
+      from: `${Meteor.settings.public.appName} <${Meteor.user().emails[0].address}>`,
       subject: subject,
       html: html
     });

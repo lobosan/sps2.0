@@ -29,14 +29,15 @@ let _assignToRole = (userId, roles) => {
 };
 
 let _sendWelcomeEmail = (email, userName) => {
+  SSR.compileTemplate('welcome', Assets.getText('email/templates/welcome.html'));
+  let html = SSR.render('welcome', {username: userName});
+
   try {
     Email.send({
       to: email,
-      from: 'SPS <sps@kenjygroup.com>',
+      from: `${Meteor.settings.public.appName} <${Meteor.settings.private.spsEmailSender}>`,
       subject: 'Welcome to SPS!',
-      text: `Hey ${ userName }!\n\n
-      Welcome to the Scenario Planning System. Thanks for signing up :)\n\n
-      - Santiago`
+      html: html
     });
   } catch (exception) {
     handleSignup.error(`[Email] ${ exception }`);
