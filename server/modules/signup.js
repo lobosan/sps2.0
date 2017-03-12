@@ -32,7 +32,7 @@ let _sendWelcomeEmail = (email, userName) => {
   try {
     Email.send({
       to: email,
-      from: 'SPS <sp.galindoh@gmail.com>',
+      from: 'SPS <sps@kenjygroup.com>',
       subject: 'Welcome to SPS!',
       text: `Hey ${ userName }!\n\n
       Welcome to the Scenario Planning System. Thanks for signing up :)\n\n

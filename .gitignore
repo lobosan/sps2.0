@@ -1,5 +1,5 @@
 .idea/
 node_modules/
-npm-debug.log
+npm-debug.log.*
 settings-production.json
 settings-development.json
