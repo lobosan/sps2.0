@@ -16,7 +16,7 @@ Meteor.methods({
     // is allowed to send per day
 
     SSR.compileTemplate('participate', Assets.getText('email/templates/participate.html'));
-    let html = SSR.render('participate', {scenario: scenario.name, description: scenario.description, domain: Meteor.settings.public.domain});
+    let html = SSR.render('participate', {scenario: scenario.name, description: scenario.description, by: Meteor.user().profile.name, domain: Meteor.settings.public.domain});
 
     Email.send({
       to: to,

@@ -23,10 +23,8 @@ Meteor.methods({
 
     let domain = Meteor.settings.public.domain;
 
-    var html = "<h1>Scenario Planning System</h1>"
-      + "The scenario <b>" + scenario_name + "</b> has started a new turn<br><br>"
-      + "Description: " + scenario_description + "<br><br>"
-      + "Go to the platform to select the scenario described above and continue your <a href='"+domain+"'>evaluation</a>";
+    SSR.compileTemplate('next-turn', Assets.getText('email/templates/next-turn.html'));
+    let html = SSR.render('next-turn', {scenario: scenario_name, description: scenario_description, domain: domain});
 
     if (emails.length >= 1) {
       this.unblock();
@@ -35,8 +33,8 @@ Meteor.methods({
 
       Email.send({
         to: emails,
-        from: Meteor.user().emails[0].address,
-        subject: "SPS - Next turn notification",
+        from: `${Meteor.settings.public.appName} <${Meteor.user().emails[0].address}>`,
+        subject: "Next turn notification",
         html: html
       });
     }

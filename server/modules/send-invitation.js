@@ -35,7 +35,7 @@ let _sendInvitation = (email, content) => {
   Email.send({
     to: email,
     from: "Scenario Planning System <"+Meteor.user().emails[0].address+">",
-    subject: "Invitation to participate in SPS",
+    subject: "Invitation to join SPS",
     html: content
   });
 };
