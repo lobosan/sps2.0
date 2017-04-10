@@ -1,6 +1,6 @@
 # SCENARIO PLANNING SYSTEM 2.0
 ## Run development environment
-npm run local
+meteor npm run dev
 
 ## Deployment
 git remote -v

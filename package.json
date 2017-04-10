@@ -3,9 +3,7 @@
   "version": "2.0.0",
   "description": "Scenario Planning System",
   "scripts": {
-    "local": "meteor --settings settings-development.json",
-    "test": "meteor deploy sps2.meteor.com --settings settings-production.json --debug",
-    "prod": "meteor deploy sps2.meteor.com --settings settings-production.json"
+    "dev": "meteor --settings settings-development.json"
   },
   "dependencies": {
     "bcrypt": "^0.8.7"
