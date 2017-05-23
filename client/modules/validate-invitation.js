@@ -1,7 +1,7 @@
 let form;
 let template;
 
-let signup = (options) => {
+let validateInvitation = (options) => {
   form = options.form;
   template = options.template;
 
@@ -15,53 +15,40 @@ let _validate = () => {
 let validation = () => {
   return {
     rules: {
-      userName: {
-        required: true,
-        minlength: 6
-      },
-      emailAddress: {
-        required: true,
-        email: true
-      },
       password: {
         required: true,
         minlength: 6
       }
     },
     messages: {
-      userName: {
-        required: 'Need an user name here.',
-        minlength: 'Use at least six characters, please.'
-      },
-      emailAddress: {
-        required: 'Need an email address here.',
-        email: 'Is this email address legit?'
-      },
       password: {
         required: 'Need a password here.',
         minlength: 'Use at least six characters, please.'
       }
     },
     submitHandler() {
-      _handleSignup();
+      _handleInvitation();
     }
   };
 };
 
-let _handleSignup = () => {
+let _handleInvitation = () => {
   let password = template.find('[name="password"]').value;
 
   let user = {
-      profile: {
-        name: template.find('[name="userName"]').value
-      },
-      email: template.find('[name="emailAddress"]').value,
-      password: Accounts._hashPassword(password)
-    };
+    profile: {
+      name: template.find('[name="userName"]').value
+    },
+    email: template.find('[name="emailAddress"]').value,
+    password: Accounts._hashPassword(password)
+  };
 
-  Meteor.call('createAccount', user, (error, response) => {
+  let token = FlowRouter.current().params.token;
+
+  Meteor.call('acceptInvitation', user, token, (error, response) => {
     if (error) {
       Bert.alert(error.reason, 'danger');
+      console.log(error.reason);
     } else {
       _loginUser(user.email, password, response);
     }
@@ -78,4 +65,4 @@ let _loginUser = (email, password, welcomeMessage) => {
   });
 };
 
-Modules.client.signup = signup;
+Modules.client.validateInvitation = validateInvitation;

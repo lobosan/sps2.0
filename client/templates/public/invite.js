@@ -1,26 +1,36 @@
-Template.invite.onRendered(function () {
-  Modules.client.validateInvitation({form: "#accept-invitation", template: Template.instance()});
-});
-
 Template.invite.onCreated(function () {
-  this.isInviteReady = new ReactiveVar(false);
-
+  this.token = new ReactiveVar(FlowRouter.current().params.token);
   this.autorun(() => {
-    let handleInvite = Meteor.subscribe('invite', FlowRouter.current().params.token);
-    this.isInviteReady.set(handleInvite.ready());
+    this.subscribe('invite', this.token.get());
   });
 });
 
-Template.invite.helpers({
-  invitation: function () {
-    var invite = Invitations.findOne();
+Template.invite.onRendered(function () {
+  let template = Template.instance();
+  let token = template.token.get();
+  template.subscribe('invite', token, () => {
+    // Wait for the data to load using the callback
+    Tracker.afterFlush(() => {
+      // Use Tracker.afterFlush to wait for the UI to re-render
+      // then bind validation to form
+      Modules.client.validateInvitation({
+        form: "#accept-invitation",
+        template: template
+      });
+    });
+  });
+});
 
-    if (invite) {
-      return invite;
+  Template.invite.events({
+    'submit form': (event) => {
+      event.preventDefault();
     }
-  }
-});
+  });
 
-Template.invite.events({
-  'submit form': (event) => event.preventDefault()
-});
+  Template.invite.helpers({
+    invitation: function () {
+      return Invitations.findOne(
+        { token: Template.instance().token.get() }
+      );
+    }
+  });

@@ -14,20 +14,21 @@ Meteor.methods({
       throw new Meteor.Error('500', `${ error }`);
     });
   },
-  acceptInvitation(user) {
+  acceptInvitation(user, token) {
     check(user, {
-      userName: String,
+      profile: {
+        name: String
+      },
       email: String,
-      password: Object,
-      token: String
+      password: Object
     });
+    check(token, String);
 
-    try {
-      var userId = Modules.server.acceptInvitation(user);
-      return userId;
-    } catch (exception) {
-      return exception;
-    }
+    return Modules.server.acceptInvitation(user, token).then((response) => {
+      return response;
+    }).catch((error) => {
+      throw new Meteor.Error('500', `${error}`);
+    });
   },
   setRoleOnUser(options) {
     check(options, {

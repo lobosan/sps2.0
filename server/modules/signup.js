@@ -3,10 +3,10 @@ let handleSignup;
 let signup = (options, promise) => {
   handleSignup = promise;
 
-  let userId = _createAccount(options),
-    userName = options.profile.name;
+  let userId = _createAccount(options);
+  let userName = options.profile.name;
 
-  _assignToRole(userId, 'admin');
+  _assignToRole(userId, 'public');
   _sendWelcomeEmail(options.email, userName);
 
   handleSignup.response(`Hey ${ userName }, welcome!`);
@@ -20,9 +20,9 @@ let _createAccount = (user) => {
   }
 };
 
-let _assignToRole = (userId, roles) => {
+let _assignToRole = (userId, role) => {
   try {
-    Roles.addUsersToRoles(userId, roles);
+    Roles.addUsersToRoles(userId, role);
   } catch (exception) {
     handleSignup.error(`[Roles] ${ exception }`);
   }
