@@ -4,7 +4,6 @@ let template;
 let validateInvitation = (options) => {
   form = options.form;
   template = options.template;
-
   _validate();
 };
 
