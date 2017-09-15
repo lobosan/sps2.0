@@ -1,5 +1,5 @@
 let invitation = (options) => {
-  var user = Meteor.users.findOne({'emails.address': options.email});
+  var user = Meteor.users.findOne({ 'emails.address': options.email });
   if (user) {
     try {
       Modules.server.addUserToContactsList(user._id, options.authorId);
@@ -7,7 +7,7 @@ let invitation = (options) => {
       return exception;
     }
   } else {
-    var invitation = Invitations.findOne({email: options.email});
+    var invitation = Invitations.findOne({ email: options.email });
     var email;
     if (!invitation) {
       _insertInvitation(options);
@@ -23,10 +23,10 @@ let _insertInvitation = (invite) => {
 
 let _prepareEmail = (userName, authorId, token) => {
   let domain = Meteor.settings.public.domain;
-  let url = `${ domain }/invite/${ authorId }/${ token }`;
+  let url = `${domain}/invite/${authorId}/${token}`;
 
   SSR.compileTemplate('invitation', Assets.getText('email/templates/invitation.html'));
-  let html = SSR.render('invitation', {url: url, userName: userName});
+  let html = SSR.render('invitation', { url: url, userName: userName });
 
   return html;
 };
@@ -34,7 +34,7 @@ let _prepareEmail = (userName, authorId, token) => {
 let _sendInvitation = (email, content) => {
   Email.send({
     to: email,
-    from: "Scenario Planning System <"+Meteor.user().emails[0].address+">",
+    from: "Scenario Planning System <" + Meteor.user().emails[0].address + ">",
     subject: "Invitation to join SPS",
     html: content
   });

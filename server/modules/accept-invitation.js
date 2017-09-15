@@ -47,7 +47,7 @@ let _assignToRole = (userId, role) => {
 
 let _addUserToContactsList = (userId, authorId) => {
   try {
-    let contactsList = Contacts.find({ authorId: authorId }).count();
+    const contactsList = Contacts.find({ authorId: authorId }).count();
     if (contactsList === 0) {
       let directory = Contacts.insert({ authorId: authorId });
       Contacts.update({ _id: directory }, {
@@ -76,3 +76,5 @@ Modules.server.acceptInvitation = (user, token) => {
     acceptInvitation(user, token, { response: resolve, error: reject });
   });
 };
+
+Modules.server.addUserToContactsList = _addUserToContactsList
