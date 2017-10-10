@@ -88,7 +88,12 @@ chartsDataUser = function (userId, connectivityMatrixScenarioTurn, probabilityMa
     return parseFloat(memo) + parseFloat(num);
   }, 0);
   _.each(evi, function (e) {
-    probabilityCurrentUser.push((e / sumEvi) * 100);
+    if (sumEvi === 0) {
+      probabilityCurrentUser.push((e / 1) * 100);
+    } else {
+      probabilityCurrentUser.push((e / sumEvi) * 100);
+    }
+    
   });
   // console.log(probabilityCurrentUser);
 

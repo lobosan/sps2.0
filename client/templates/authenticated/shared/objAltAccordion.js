@@ -65,15 +65,17 @@ Template.alternativesAccordion.helpers({
     }
 
     var alternatives = Alternatives.find({scenario_id: activeScenario, turn: {$lte: turn}, active: 'Yes'}).fetch();
-    var alternativesList = [];
-    var alternativesNames = [];
-    var index = 1;
-    _.each(alternatives, function (alternative) {
-      alternativesList.push({index: index, name: alternative.name, description: alternative.description, turn: alternative.turn});
-      alternativesNames.push({altName: alternative.name});
-      index++;
-    });
-    Session.set('altNamesGlobal', alternativesNames);
-    return alternativesList;
+    if (alternatives.length !== 0) {
+      var alternativesList = [];
+      var alternativesNames = [];
+      var index = 1;
+      _.each(alternatives, function (alternative) {
+        alternativesList.push({index: index, name: alternative.name, description: alternative.description, turn: alternative.turn});
+        alternativesNames.push({altName: alternative.name});
+        index++;
+      });
+      Session.set('altNamesGlobal', alternativesNames);
+      return alternativesList;
+    }
   }
 });
