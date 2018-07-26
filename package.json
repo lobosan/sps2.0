@@ -3,11 +3,12 @@
   "version": "2.0.0",
   "description": "Scenario Planning System",
   "scripts": {
-    "dev": "meteor --settings settings-development.json"
+    "dev": "meteor --settings settings-development.json",
+    "lint": "eslint .",
+    "pretest": "npm run lint --silent"
   },
-  "dependencies": {
-    "babel-runtime": "^6.26.0",
-    "bcrypt": "^1.0.3"
+  "eslintConfig": {
+    "extends": "@meteorjs/eslint-config-meteor"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,15 @@
   "license": "MIT",
   "engines": {
     "node": "4.8.4"
+  },
+  "dependencies": {
+    "babel-runtime": "^6.26.0",
+    "bcrypt": "^1.0.3"
+  },
+  "devDependencies": {
+    "@meteorjs/eslint-config-meteor": "^1.0.5",
+    "eslint": "^5.2.0",
+    "eslint-plugin-html": "^4.0.5",
+    "eslint-plugin-meteor": "^5.0.0"
   }
 }

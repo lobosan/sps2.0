@@ -62,7 +62,7 @@ Template.probabilityMatrix.onRendered(function () {
               var oldVal = change[i][2];
               var newVal = change[i][3];
               var setModifier = {$set: {}};   // Need to build $set object
-              setModifier.$set[key] = newVal; // So that we can assign 'key' dynamically using bracket notation of JavaScript object
+              setModifier.$set[key] = parseInt(newVal); // So that we can assign 'key' dynamically using bracket notation of JavaScript object
               ProbabilityMatrix.update(row._id, setModifier);
             }
           }

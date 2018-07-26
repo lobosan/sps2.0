@@ -53,15 +53,15 @@ Template.adminScenario.helpers({
 });
 
 Template.adminScenario.events({
-  'change .js-switch-obj': function (event, template) {
-    let objId = template.$(event.target)[0].value;
-    let active = template.$(event.target)[0].checked;
+  'change .js-switch-obj': function (event, templateInstance) {
+    let objId = templateInstance.$(event.target)[0].value;
+    let active = templateInstance.$(event.target)[0].checked;
     active = active ? 'Yes' : 'No';
     Meteor.call('objectiveActiveInactive', objId, active);
   },
-  'change .js-switch-alt': function (event, template) {
-    let altId = template.$(event.target)[0].value;
-    let active = template.$(event.target)[0].checked;
+  'change .js-switch-alt': function (event, templateInstance) {
+    let altId = templateInstance.$(event.target)[0].value;
+    let active = templateInstance.$(event.target)[0].checked;
     active = active ? 'Yes' : 'No';
     Meteor.call('alternativeActiveInactive', altId, active);
   },
@@ -147,7 +147,7 @@ Template.adminScenario.events({
                 orderIni++;
               }
               for (var j = 1; j <= numObj; j++) {
-                conMat[i]['o' + j] = newMat[i][j + 2];
+                conMat[i]['o' + j] = parseInt(newMat[i][j + 2]);
               }
             }
             // console.log(conMat);
@@ -190,7 +190,7 @@ Template.adminScenario.events({
                 orderIni++;
               }
               for (var j = 1; j <= numObj; j++) {
-                probMat[i]['p' + j] = newMatP[i][j + 2];
+                probMat[i]['p' + j] = parseInt(newMatP[i][j + 2]);
               }
             }
 
@@ -253,7 +253,7 @@ Template.adminScenario.events({
             if (objsNextTurn > 0) {
               var conNewDim = objsPreviousTurns + objsNextTurn;
               for (j = objsPreviousTurns + 1; j <= conNewDim; j++) {
-                conMatrix[c]['o' + j] = 0;
+                conMatrix[c]['o' + j] = parseInt(0);
               }
             }
             ConnectivityMatrix.insert(conMatrix[c]);
@@ -271,7 +271,7 @@ Template.adminScenario.events({
                   if (order == m) {
                     temp['o' + m] = 'x';
                   } else {
-                    temp['o' + m] = 0;
+                    temp['o' + m] = parseInt(0);
                   }
                 }
                 ConnectivityMatrix.insert(temp);
@@ -297,7 +297,7 @@ Template.adminScenario.events({
             if (objsNextTurn > 0) {
               var probNewDim = objsPreviousTurns + objsNextTurn;
               for (j = objsPreviousTurns + 1; j <= probNewDim; j++) {
-                probMatrix[c]['p' + j] = 0;
+                probMatrix[c]['p' + j] = parseInt(0);
               }
             }
             ProbabilityMatrix.insert(probMatrix[c]);
@@ -314,7 +314,7 @@ Template.adminScenario.events({
                 temp['created_at'] = created_at;
                 temp['order'] = order;
                 for (m = 1; m <= probNewDim; m++) {
-                  temp['p' + m] = 0;
+                  temp['p' + m] = parseInt(0);
                 }
                 ProbabilityMatrix.insert(temp);
                 order++;
@@ -332,8 +332,8 @@ Template.adminScenario.events({
       }
     }
   },
-  'click #finish-evaluation': function (evt) {
-    evt.preventDefault();
+  'click #finish-evaluation': function (event) {
+    event.preventDefault();
     var activeScenario = Scenarios.findOne({_id: Session.get('active_scenario')});
 
     var complete_values = [];

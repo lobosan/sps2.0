@@ -16,14 +16,20 @@ Template.reports.onRendered(function () {
   this.autorun(() => {
     if (this.subscriptionsReady()) {
       const activeScenario = Session.get('active_scenario');
-      const currentScenario = Scenarios.findOne({_id: activeScenario});
+      const currentScenario = Scenarios.findOne({ _id: activeScenario });
       const currentTurn = currentScenario.turn;
       const selectTurn = document.getElementById('turn');
       const strSelectTurn = selectTurn.options[selectTurn.selectedIndex].text;
       if (strSelectTurn == 'Select one') Session.set('turn', currentTurn);
 
-      const connectivityMatrixScenarioTurn = ConnectivityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
-      const probabilityMatrixScenarioTurn = ProbabilityMatrix.find({scenario_id: activeScenario, turn: Session.get('turn')}, {sort: {created_at: 1}}).fetch();
+      const connectivityMatrixScenarioTurn = ConnectivityMatrix.find({
+        scenario_id: activeScenario,
+        turn: Session.get('turn')
+      }, { sort: { created_at: 1 } }).fetch();
+      const probabilityMatrixScenarioTurn = ProbabilityMatrix.find({
+        scenario_id: activeScenario,
+        turn: Session.get('turn')
+      }, { sort: { created_at: 1 } }).fetch();
 
       let results = calculations(currentScenario, connectivityMatrixScenarioTurn, probabilityMatrixScenarioTurn);
       buildInfluenceDependenceUser(results.infDepCurrentUser);
@@ -35,43 +41,76 @@ Template.reports.onRendered(function () {
 });
 
 Template.results.events({
-  'click #complete_values': function (event, template) {
+  'click #complete_values': function (event) {
     Meteor.call('updateCompletedValues', Session.get('active_scenario'), Meteor.userId(), 'Yes');
-    toastr.options = {"timeOut": "8000", "progressBar": true};
-    toastr.success('You can still update the values until the owner of the scenario changes the turn or finishes the evaluation', 'Evaluation confirmed');
+    toastr.options = { "timeOut": "8000", "progressBar": true };
+    toastr.success(
+      'You can still update the values until the owner of the scenario changes the turn or finishes the evaluation',
+      'Evaluation confirmed'
+    );
   },
-  'change #turn': function (event, template) {
-    var turn = template.$(event.target).val();
+  'change #turn': function (event, templateInstance) {
+    var turn = templateInstance.$(event.target).val();
     Session.set('turn', parseInt(turn));
   },
-  'change .js-switch-obj': function (event, template) {
-    var checked = template.$(event.target)[0].checked;
+  'change .js-switch-obj': function (event, templateInstance) {
+    var checked = templateInstance.$(event.target)[0].checked;
     if (checked) {
-      template.$('#collapseObjectives').collapse('show');
+      templateInstance.$('#collapseObjectives').collapse('show');
     } else {
-      template.$('#collapseObjectives').collapse('hide');
+      templateInstance.$('#collapseObjectives').collapse('hide');
     }
   },
-  'change .js-switch-alt': function (event, template) {
-    var checked = template.$(event.target)[0].checked;
+  'change .js-switch-alt': function (event, templateInstance) {
+    var checked = templateInstance.$(event.target)[0].checked;
     if (checked) {
-      template.$('#collapseAlternatives').collapse('show');
+      templateInstance.$('#collapseAlternatives').collapse('show');
     } else {
-      template.$('#collapseAlternatives').collapse('hide');
+      templateInstance.$('#collapseAlternatives').collapse('hide');
     }
   }
 });
 
 Template.results.helpers({
+  participation: function () {
+    var connectivityCurrentUser = ConnectivityMatrix.find({
+      scenario_id: Session.get('active_scenario'),
+      turn: Session.get('turn'),
+      user_id: Meteor.userId()
+    }, { sort: { created_at: 1 } }).fetch();
+    var connectivityValues = [];
+    for (var i = 0; i < connectivityCurrentUser.length; i++) {
+      for (var j = 1; j <= connectivityCurrentUser.length; j++) {
+        if ((connectivityCurrentUser[i]['o' + j]) != 'x')
+          connectivityValues.push(parseInt(connectivityCurrentUser[i]['o' + j]));
+      }
+    }
+    var probabilityCurrentUser = ProbabilityMatrix.find({
+      scenario_id: Session.get('active_scenario'),
+      turn: Session.get('turn'),
+      user_id: Meteor.userId()
+    }, { sort: { created_at: 1 } }).fetch();
+    var probabilityValues = [];
+    for (var i = 0; i < probabilityCurrentUser.length; i++) {
+      for (var j = 1; j <= probabilityCurrentUser.length; j++) {
+        probabilityValues.push(parseInt(probabilityCurrentUser[i]['p' + j]));
+      }
+    }
+    var participation = true;
+    if (_.max(connectivityValues) === 0 || _.max(probabilityValues) === 0) {
+      participation = false;
+    }
+    return participation;
+  },
   turns: function () {
     var activeScenario = Session.get('active_scenario');
     if (!activeScenario) return;
-    var currentScenario = Scenarios.findOne({_id: activeScenario});
+    var currentScenario = Scenarios.findOne({ _id: activeScenario });
     if (!currentScenario) return;
     var turn = currentScenario.turn;
     var turns = [];
     for (var i = 1; i <= turn; i++) {
-      turns.push({turn: i});
+      turns.push({ turn: i });
     }
     return turns;
   },
@@ -82,7 +121,10 @@ Template.results.helpers({
       if (infDepGlobal.length === 0 || objNamesGlobal.length === 0) return;
       var objCoord = [];
       _.each(infDepGlobal, function (coordinates, key) {
-        objCoord.push({'objName': objNamesGlobal[key].objName, 'coordinates': coordinates.toString().replace(',', ', ')});
+        objCoord.push({
+          'objName': objNamesGlobal[key].objName,
+          'coordinates': coordinates.toString().replace(',', ', ')
+        });
       });
       return objCoord;
     }
@@ -94,7 +136,10 @@ Template.results.helpers({
       if (probGlobal.length === 0 || altNamesGlobal.length === 0) return;
       var probCoord = [];
       _.each(probGlobal, function (coordinates, key) {
-        probCoord.push({'altName': altNamesGlobal[key].altName, 'probability': coordinates.toString().replace(',', ', ')});
+        probCoord.push({
+          'altName': altNamesGlobal[key].altName,
+          'probability': coordinates.toString().replace(',', ', ')
+        });
       });
       return probCoord;
     }

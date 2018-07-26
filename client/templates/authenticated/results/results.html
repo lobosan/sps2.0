@@ -10,9 +10,18 @@
 			{{/if}}
 
 			<form class="form-inline">
-				<button id="complete_values" type="button" class="btn btn-success switcher-separator">
-					<i class="fa fa-check"></i> Confirm Evaluation
-				</button>
+				{{#if participation}}
+					<button id="complete_values" type="button" class="btn btn-success switcher-separator">
+						<i class="fa fa-check"></i> Confirm Evaluation
+					</button>
+				{{else}}
+				<button
+					disabled
+					title="Add values to your matrices in order to confirm your evaluation"
+					id="complete_values" type="button" class="btn btn-success switcher-separator">
+						<i class="fa fa-check"></i> Confirm Evaluation
+					</button>
+        {{/if}}
 
 				Turn: <select name="turn" id="turn" class="form-control switcher-separator">
 				<option value="" selected>Select one</option>

@@ -1,0 +1,23 @@
+{
+  "plugins": [
+    "html",
+    "meteor"
+  ],
+  "extends": [
+    "plugin:meteor/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module"
+  },
+  "env": {
+    "meteor": true,
+    "node": true,
+    "browser": true
+  },
+  "rules": {
+    "meteor/no-session": [
+      0
+    ]
+  }
+}
