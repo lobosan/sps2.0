@@ -1,5 +1,10 @@
 # SCENARIO PLANNING SYSTEM 2.0
 
+## Install dependencies
+```
+meteor npm install
+```
+
 ## Run development environment
 ```
 meteor npm run dev
@@ -24,6 +29,7 @@ git remote -v
 
 ## Deployment
 ```
+git push origin master
 git push staging master
 git push live master
 ```

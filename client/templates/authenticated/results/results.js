@@ -2,6 +2,7 @@ Template.reports.onCreated(function () {
   this.activeScenario = () => Session.get('active_scenario');
 
   this.autorun(() => {
+    this.subscribe('objectiveList', this.activeScenario());
     this.subscribe('connectivityMatrix', this.activeScenario());
     this.subscribe('probabilityMatrix', this.activeScenario());
   });
@@ -90,15 +91,18 @@ Template.results.helpers({
       turn: Session.get('turn'),
       user_id: Meteor.userId()
     }, { sort: { created_at: 1 } }).fetch();
+    var numObjectives = Objectives.find({ active: 'Yes' }).count();
     var probabilityValues = [];
     for (var i = 0; i < probabilityCurrentUser.length; i++) {
-      for (var j = 1; j <= probabilityCurrentUser.length; j++) {
+      for (var j = 1; j <= numObjectives; j++) {
         probabilityValues.push(parseInt(probabilityCurrentUser[i]['p' + j]));
       }
     }
-    var participation = true;
+    var participation = false;
     if (_.max(connectivityValues) === 0 || _.max(probabilityValues) === 0) {
       participation = false;
+    } else {
+      participation = true;
     }
     return participation;
   },

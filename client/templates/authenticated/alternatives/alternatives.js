@@ -18,6 +18,7 @@ Template.insertAlternativeForm.helpers({
     if (!activeScenario) return;
 
     var currentScenario = Scenarios.findOne({_id: activeScenario});
+    if (!currentScenario) return;
     var turn = currentScenario.turn;
     turn++;
     return {
