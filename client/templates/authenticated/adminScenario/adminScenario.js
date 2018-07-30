@@ -147,7 +147,11 @@ Template.adminScenario.events({
                 orderIni++;
               }
               for (var j = 1; j <= numObj; j++) {
-                conMat[i]['o' + j] = parseInt(newMat[i][j + 2]);
+                if (newMat[i][j + 2] === 'x') {
+                  conMat[i]['o' + j] = newMat[i][j + 2];
+                } else {
+                  conMat[i]['o' + j] = parseInt(newMat[i][j + 2]);
+                }
               }
             }
             // console.log(conMat);
